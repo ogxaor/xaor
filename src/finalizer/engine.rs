@@ -11,14 +11,16 @@ impl FinalizerEngine {
         let mut buffer = state.to_vec();
 
         // Diffusion layer
-        for round in 0..4 {
-            for i in 0..buffer.len() {
-                let next = buffer[(i + 1) % buffer.len()];
-                let prev = buffer[(i + buffer.len() - 1) % buffer.len()];
+        if !buffer.is_empty() {
+            for round in 0..4 {
+                for i in 0..buffer.len() {
+                    let next = buffer[(i + 1) % buffer.len()];
+                    let prev = buffer[(i + buffer.len() - 1) % buffer.len()];
 
-                buffer[i] ^= next.rotate_left((round + 1) as u32);
-                buffer[i] = buffer[i].wrapping_add(prev);
-                buffer[i] = buffer[i].rotate_left(3);
+                    buffer[i] ^= next.rotate_left((round + 1) as u32);
+                    buffer[i] = buffer[i].wrapping_add(prev);
+                    buffer[i] = buffer[i].rotate_left(3);
+                }
             }
         }
 

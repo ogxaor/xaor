@@ -85,3 +85,51 @@ It has not undergone:
 * adversarial benchmarking
 
 Do not use Xcrypt in production environments until security validation is complete.
+
+---
+
+## CLI Usage
+
+The repository now includes a built-in CLI for local use and automation:
+
+```bash
+xcrypt hash "mypassword"
+xcrypt verify "mypassword" "$xcrypt$v=1$..."
+xcrypt errors
+xcrypt bench 5
+xcrypt --profile interactive config
+```
+
+### Commands
+
+* `hash <password>`: generate a stored Xcrypt hash
+* `verify <password> <stored-hash>`: verify a password against a stored hash
+* `errors`: print the built-in error catalog
+* `bench [iterations]`: run a simple hashing benchmark
+* `config`: print the active configuration
+
+### Profiles
+
+You can choose a preset with `--profile` or environment variables:
+
+* `interactive`
+* `standard`
+* `high-security`
+* `server`
+
+Example environment variables:
+
+```bash
+XCRYPT_PROFILE=server
+XCRYPT_ROUNDS=16
+XCRYPT_MEMORY=256
+XCRYPT_NODES=32
+XCRYPT_OUTPUT_SIZE=64
+XCRYPT_MODE=hash
+```
+
+### Notes
+
+* `--profile` overrides `XCRYPT_PROFILE`
+* `hash` and `verify` return errors with readable error codes when input is invalid
+* `bench` uses the same configured pipeline as the library API

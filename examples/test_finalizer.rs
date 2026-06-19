@@ -1,11 +1,12 @@
 use xcrypt::engine::xcrypt::XcryptEngine;
-use xcrypt::XcryptConfig;
+use xcrypt::{config::XcryptMode, XcryptConfig};
 
 fn main() {
-    let config = XcryptConfig::default();
+    let mut config = XcryptConfig::default();
+    config.mode = XcryptMode::Encrypt;
     let engine = XcryptEngine::new(config).unwrap();
 
-    let result = engine.process(b"xcrypt-test").unwrap();
+    let result = engine.process(b"xcrypt-test", None).unwrap();
 
     println!("Final length: {}", result.len());
     println!("{:?}", result);

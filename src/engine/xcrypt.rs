@@ -1,13 +1,16 @@
-use crate::compound::CompoundEngine;
-use crate::constant_time_eq;
-use crate::finalizer::FinalizerEngine;
-use crate::memory::MemoryArena;
-use crate::recycler::RecyclerEngine;
-use crate::seed::SeedEngine;
-use crate::topology::TopologyEngine;
-use crate::{XcryptConfig, XcryptError};
 use base64::{engine::general_purpose, Engine as _};
+use rand::RngCore;
 
+use crate::entropy::{EntropyEngine, EntropyVector};
+use crate::pipeline::{
+    CompoundStage, FinalizerStage, MemoryStage, PipelineRunner, RecyclerStage, SeedStage,
+    TopologyStage,
+};
+use crate::serialization::StoredHash;
+use crate::seed::SeedEngine;
+use crate::{constant_time_eq, XcryptConfig, XcryptError};
+
+#[derive(Debug, Clone)]
 pub struct XcryptEngine {
     config: XcryptConfig,
 }
@@ -21,46 +24,53 @@ impl XcryptEngine {
         Ok(Self { config })
     }
 
-    pub fn generate_seed(&self, input: &[u8], salt: Option<&[u8]>) -> Result<Vec<u8>, XcryptError> {
-        let entropy = match self.config.mode {
+    fn build_entropy(&self, salt: Option<&[u8]>) -> Result<EntropyVector, XcryptError> {
+        match self.config.mode {
             crate::config::XcryptMode::Hash => {
                 let salt = salt.ok_or(XcryptError::SeedError)?;
 
-                crate::entropy::EntropyVector {
+                Ok(EntropyVector {
                     bytes: salt.to_vec(),
-                }
+                })
             }
-
             crate::config::XcryptMode::Encrypt => {
-                let entropy_engine = crate::entropy::EntropyEngine::new(self.config.output_size);
-
-                entropy_engine.generate()?
+                let entropy_engine = EntropyEngine::new(self.config.output_size);
+                entropy_engine.generate()
             }
-        };
+        }
+    }
 
+    pub fn generate_seed(
+        &self,
+        input: &[u8],
+        salt: Option<&[u8]>,
+    ) -> Result<Vec<u8>, XcryptError> {
+        let entropy = self.build_entropy(salt)?;
         let seed_engine = SeedEngine::new();
         let seed = seed_engine.generate(input, &entropy)?;
 
         Ok(seed.root.to_vec())
     }
 
-    pub fn process(&self, input: &[u8], salt: Option<&[u8]>) -> Result<Vec<u8>, XcryptError> {
-        let seed = self.generate_seed(input, salt)?;
-        let graph = TopologyEngine::generate(&seed, self.config.node_count);
+    pub fn process(
+        &self,
+        input: &[u8],
+        salt: Option<&[u8]>,
+    ) -> Result<Vec<u8>, XcryptError> {
+        let entropy = self.build_entropy(salt)?;
 
-        let compound = CompoundEngine::process(&seed, &graph, self.config.rounds);
+        let mut pipeline = PipelineRunner::new();
+        pipeline.add_stage(Box::new(SeedStage::new(entropy)));
+        pipeline.add_stage(Box::new(TopologyStage::new(self.config.node_count)));
+        pipeline.add_stage(Box::new(CompoundStage::new(self.config.rounds)));
+        pipeline.add_stage(Box::new(RecyclerStage::new(self.config.rounds)));
+        pipeline.add_stage(Box::new(MemoryStage::new(self.config.memory_size_mb)));
+        pipeline.add_stage(Box::new(FinalizerStage::new()));
 
-        let recycled = RecyclerEngine::recycle(&compound, self.config.rounds);
-
-        let memory_hardened = MemoryArena::process(&recycled, self.config.memory_size_mb);
-
-        let final_output = FinalizerEngine::finalize(&memory_hardened);
-        Ok(final_output)
+        Ok(pipeline.run(input.to_vec()))
     }
 
     pub fn hash_password(&self, password: &str) -> Result<String, XcryptError> {
-        use rand::RngCore;
-
         let mut salt = [0u8; 16];
         rand::thread_rng().fill_bytes(&mut salt);
 
@@ -80,25 +90,9 @@ impl XcryptEngine {
     }
 
     pub fn verify_password(&self, password: &str, stored: &str) -> Result<bool, XcryptError> {
-        let parts: Vec<&str> = stored.split('$').collect();
+        let stored = StoredHash::parse(stored)?;
+        let computed = self.process(password.as_bytes(), Some(&stored.salt))?;
 
-        if parts.len() < 7 {
-            return Err(XcryptError::SeedError);
-        }
-
-        let salt_b64 = parts[6];
-        let hash_b64 = parts[7];
-
-        let salt = general_purpose::STANDARD
-            .decode(salt_b64)
-            .map_err(|_| XcryptError::SeedError)?;
-
-        let stored_hash = general_purpose::STANDARD
-            .decode(hash_b64)
-            .map_err(|_| XcryptError::SeedError)?;
-
-        let computed = self.process(password.as_bytes(), Some(&salt))?;
-
-        Ok(constant_time_eq(&computed, &stored_hash))
+        Ok(constant_time_eq(&computed, &stored.hash))
     }
 }

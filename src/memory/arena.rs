@@ -10,10 +10,20 @@ impl MemoryArena {
     pub fn process(state: &[u8], memory_mb: usize) -> Vec<u8> {
         let arena_size = memory_mb * 1024 * 1024;
 
+        if arena_size == 0 {
+            return Vec::new();
+        }
+
         let mut arena = vec![0u8; arena_size];
 
-        for i in 0..arena.len() {
-            arena[i] = state[i % state.len()];
+        if state.is_empty() {
+            for byte in &mut arena {
+                *byte = 0;
+            }
+        } else {
+            for i in 0..arena.len() {
+                arena[i] = state[i % state.len()];
+            }
         }
 
         let mut cursor = 0usize;

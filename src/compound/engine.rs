@@ -1,20 +1,36 @@
 use crate::topology::{Graph, NodeType};
+use crate::traits::stage::EngineStage;
 
-pub struct CompoundEngine;
+pub struct CompoundEngine {
+    graph: Graph,
+    rounds: usize,
+}
 
 impl CompoundEngine {
-    pub fn new() -> Self {
-        Self
+    pub fn new(graph: Graph, rounds: usize) -> Self {
+        Self { graph, rounds }
+    }
+}
+
+impl EngineStage for CompoundEngine {
+    fn name(&self) -> &'static str {
+        "CompoundEngine"
     }
 
-    pub fn process(seed: &[u8], graph: &Graph, rounds: usize) -> Vec<u8> {
-        let mut state = seed.to_vec();
+    fn execute(
+        &self,
+        input: Vec<u8>,
+        _ctx: &mut crate::pipeline::context::PipelineContext,
+    ) -> Vec<u8> {
+        let mut state = input;
 
-        for _ in 0..rounds {
-            for node in &graph.nodes {
+        for _ in 0..self.rounds {
+            for node in &self.graph.nodes {
                 match node.node_type {
                     NodeType::Rotate => {
-                        state.rotate_left(1);
+                        if !state.is_empty() {
+                            state.rotate_left(1);
+                        }
                     }
 
                     NodeType::Xor => {
@@ -32,8 +48,10 @@ impl CompoundEngine {
                     }
 
                     NodeType::Memory => {
-                        let idx = node.id % state.len();
-                        state[idx] = state[idx].wrapping_mul(7).wrapping_add(13);
+                        if !state.is_empty() {
+                            let idx = node.id % state.len();
+                            state[idx] = state[idx].wrapping_mul(7).wrapping_add(13);
+                        }
                     }
                 }
             }

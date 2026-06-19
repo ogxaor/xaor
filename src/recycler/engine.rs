@@ -10,6 +10,10 @@ impl RecyclerEngine {
     pub fn recycle(state: &[u8], cycles: usize) -> Vec<u8> {
         let mut current = state.to_vec();
 
+        if current.is_empty() {
+            return current;
+        }
+
         for cycle in 0..cycles {
             let mut hasher = Hasher::new();
 
