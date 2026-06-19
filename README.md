@@ -73,6 +73,19 @@ Produces verifier or ciphertext.
 
 ---
 
+## Experimental Subsystems
+
+Xcrypt includes several experimental helper modules:
+
+* **xnonce**: OsRng-based cryptographically secure nonce generator.
+* **xtoken**: Cryptographically secure token generator with optional prefixes.
+* **xid**: Context-aware deterministic ID generator with optional checksums.
+* **xvault**: Local secret storage vault using master-key derived keystreams.
+* **xproof**: Proof-of-work challenge issuer and verifier for anti-abuse rate-limiting.
+* **xcipher**: Authenticated symmetric encryption (AEAD) using BLAKE3 as a stream cipher.
+
+---
+
 ## Security Warning
 
 Xcrypt is experimental.

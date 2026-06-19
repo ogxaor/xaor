@@ -3,8 +3,8 @@ use rand::RngCore;
 
 use crate::entropy::{EntropyEngine, EntropyVector};
 use crate::pipeline::{
-    CompoundStage, FinalizerStage, MemoryStage, PipelineRunner, RecyclerStage, SeedStage,
-    TopologyStage,
+    ChaosStage, CompoundStage, FinalizerStage, MemoryStage, PipelineRunner, RecyclerStage,
+    SeedStage, TopologyStage,
 };
 use crate::serialization::StoredHash;
 use crate::seed::SeedEngine;
@@ -63,6 +63,7 @@ impl XcryptEngine {
         pipeline.add_stage(Box::new(SeedStage::new(entropy)));
         pipeline.add_stage(Box::new(TopologyStage::new(self.config.node_count)));
         pipeline.add_stage(Box::new(CompoundStage::new(self.config.rounds)));
+        pipeline.add_stage(Box::new(ChaosStage::new()));
         pipeline.add_stage(Box::new(RecyclerStage::new(self.config.rounds)));
         pipeline.add_stage(Box::new(MemoryStage::new(self.config.memory_size_mb)));
         pipeline.add_stage(Box::new(FinalizerStage::new()));

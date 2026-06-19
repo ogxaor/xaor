@@ -1,4 +1,5 @@
 use crate::compound::CompoundEngine;
+use crate::chaos::ChaosEngine;
 use crate::entropy::EntropyVector;
 use crate::finalizer::FinalizerEngine;
 use crate::memory::MemoryArena;
@@ -79,6 +80,28 @@ impl EngineStage for CompoundStage {
 
         let engine = CompoundEngine::new(graph, self.rounds);
         engine.execute(input, ctx)
+    }
+}
+
+pub struct ChaosStage {
+    engine: ChaosEngine,
+}
+
+impl ChaosStage {
+    pub fn new() -> Self {
+        Self {
+            engine: ChaosEngine::new(),
+        }
+    }
+}
+
+impl EngineStage for ChaosStage {
+    fn name(&self) -> &'static str {
+        "ChaosStage"
+    }
+
+    fn execute(&self, input: Vec<u8>, _ctx: &mut PipelineContext) -> Vec<u8> {
+        self.engine.transform(&input)
     }
 }
 
