@@ -1,0 +1,24 @@
+[package]
+name = "xcrypt"
+version = "0.1.0-alpha"
+edition = "2021"
+authors = ["Surya"]
+description = "Adaptive regenerative cryptographic engine"
+license = "MIT"
+repository = "https://github.com/yourusername/xcrypt"
+
+[dependencies]
+rand = "0.8"
+blake3 = "1.5"
+sha3 = "0.10"
+zeroize = "1.8"
+thiserror = "2.0"
+base64 = "0.22"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
