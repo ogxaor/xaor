@@ -3,7 +3,7 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::ptr;
 
-use crate::Xcrypt;
+use crate::Xaor;
 
 thread_local! {
     static LAST_ERROR: RefCell<Option<String>> = const { RefCell::new(None) };
@@ -34,7 +34,7 @@ fn c_str_from_ptr<'a>(ptr: *const c_char) -> Result<&'a CStr, String> {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_last_error() -> *mut c_char {
+pub extern "C" fn xaor_last_error() -> *mut c_char {
     LAST_ERROR.with(|slot| match slot.borrow().as_ref() {
         Some(err) => CString::new(err.as_str())
             .map(|s| s.into_raw())
@@ -44,7 +44,7 @@ pub extern "C" fn xcrypt_last_error() -> *mut c_char {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_free_string(_ptr: *mut c_char) {
+pub extern "C" fn xaor_free_string(_ptr: *mut c_char) {
     if !_ptr.is_null() {
         unsafe {
             let _ = CString::from_raw(_ptr);
@@ -53,7 +53,7 @@ pub extern "C" fn xcrypt_free_string(_ptr: *mut c_char) {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_free_bytes(ptr: *mut u8, len: usize) {
+pub extern "C" fn xaor_free_bytes(ptr: *mut u8, len: usize) {
     if !ptr.is_null() {
         unsafe {
             let _ = Vec::from_raw_parts(ptr, len, len);
@@ -62,7 +62,7 @@ pub extern "C" fn xcrypt_free_bytes(ptr: *mut u8, len: usize) {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_hash(password: *const c_char) -> *mut c_char {
+pub extern "C" fn xaor_hash(password: *const c_char) -> *mut c_char {
     clear_last_error();
 
     let password = match c_str_from_ptr(password).and_then(|s| {
@@ -76,7 +76,7 @@ pub extern "C" fn xcrypt_hash(password: *const c_char) -> *mut c_char {
         }
     };
 
-    let engine = match Xcrypt::from_env() {
+    let engine = match Xaor::from_env() {
         Ok(engine) => engine,
         Err(err) => {
             set_last_error(format!("{} ({})", err, err.code()));
@@ -100,7 +100,7 @@ pub extern "C" fn xcrypt_hash(password: *const c_char) -> *mut c_char {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_verify(
+pub extern "C" fn xaor_verify(
     password: *const c_char,
     stored: *const c_char,
 ) -> i32 {
@@ -128,7 +128,7 @@ pub extern "C" fn xcrypt_verify(
         }
     };
 
-    let engine = match Xcrypt::from_env() {
+    let engine = match Xaor::from_env() {
         Ok(engine) => engine,
         Err(err) => {
             set_last_error(format!("{} ({})", err, err.code()));
@@ -149,7 +149,7 @@ pub extern "C" fn xcrypt_verify(
 // Subsystems FFI Expositions
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xnonce_generate(length: usize) -> *mut c_char {
+pub extern "C" fn xaor_xnonce_generate(length: usize) -> *mut c_char {
     clear_last_error();
     match crate::NonceEngine::new(length).and_then(|e| e.generate_hex()) {
         Ok(nonce_hex) => match CString::new(nonce_hex) {
@@ -167,7 +167,7 @@ pub extern "C" fn xcrypt_xnonce_generate(length: usize) -> *mut c_char {
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xtoken_generate(length: usize, prefix: *const c_char) -> *mut c_char {
+pub extern "C" fn xaor_xtoken_generate(length: usize, prefix: *const c_char) -> *mut c_char {
     clear_last_error();
     let prefix_str = if prefix.is_null() {
         None
@@ -197,7 +197,7 @@ pub extern "C" fn xcrypt_xtoken_generate(length: usize, prefix: *const c_char) -
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xid_generate(
+pub extern "C" fn xaor_xid_generate(
     length: usize,
     prefix: *const c_char,
     checksum: i32,
@@ -244,7 +244,7 @@ pub extern "C" fn xcrypt_xid_generate(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xid_validate(
+pub extern "C" fn xaor_xid_validate(
     id: *const c_char,
     prefix: *const c_char,
     checksum: i32,
@@ -289,7 +289,7 @@ pub extern "C" fn xcrypt_xid_validate(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xcipher_encrypt(
+pub extern "C" fn xaor_xcipher_encrypt(
     plaintext: *const u8,
     plaintext_len: usize,
     key: *const u8,
@@ -335,7 +335,7 @@ pub extern "C" fn xcrypt_xcipher_encrypt(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xcipher_decrypt(
+pub extern "C" fn xaor_xcipher_decrypt(
     ciphertext: *const u8,
     ciphertext_len: usize,
     key: *const u8,
@@ -381,7 +381,7 @@ pub extern "C" fn xcrypt_xcipher_decrypt(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xvault_store(
+pub extern "C" fn xaor_xvault_store(
     path: *const c_char,
     name: *const c_char,
     secret: *const u8,
@@ -437,7 +437,7 @@ pub extern "C" fn xcrypt_xvault_store(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xvault_retrieve(
+pub extern "C" fn xaor_xvault_retrieve(
     path: *const c_char,
     name: *const c_char,
     master_key: *const u8,
@@ -511,7 +511,7 @@ pub extern "C" fn xcrypt_xvault_retrieve(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xproof_challenge(
+pub extern "C" fn xaor_xproof_challenge(
     subject: *const c_char,
     difficulty: u32,
 ) -> *mut c_char {
@@ -562,7 +562,7 @@ pub extern "C" fn xcrypt_xproof_challenge(
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xproof_solve(challenge_serialized: *const c_char) -> *mut c_char {
+pub extern "C" fn xaor_xproof_solve(challenge_serialized: *const c_char) -> *mut c_char {
     clear_last_error();
     let challenge_str = match c_str_from_ptr(challenge_serialized) {
         Ok(s) => match s.to_str() {
@@ -606,7 +606,7 @@ pub extern "C" fn xcrypt_xproof_solve(challenge_serialized: *const c_char) -> *m
 }
 
 #[no_mangle]
-pub extern "C" fn xcrypt_xproof_verify(
+pub extern "C" fn xaor_xproof_verify(
     challenge_serialized: *const c_char,
     solution_serialized: *const c_char,
 ) -> i32 {

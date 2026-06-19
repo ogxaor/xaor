@@ -1,9 +1,9 @@
-use xcrypt::engine::xcrypt::XcryptEngine;
-use xcrypt::XcryptConfig;
+use xaor::engine::xaor::XaorEngine;
+use xaor::XaorConfig;
 
 fn main() {
-    let config = XcryptConfig::default();
-    let engine = XcryptEngine::new(config).unwrap();
+    let config = XaorConfig::default();
+    let engine = XaorEngine::new(config).unwrap();
 
     let result = engine.process(
         b"password123",

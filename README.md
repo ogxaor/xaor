@@ -1,4 +1,4 @@
-# Xcrypt
+# Xaor
 
 ## Adaptive Regenerative Cryptographic Engine
 
@@ -9,9 +9,9 @@ Status: Experimental Research Project
 
 ## Overview
 
-Xcrypt is an experimental cryptographic research project aimed at designing a new category of adaptive security systems.
+Xaor is an experimental cryptographic research project aimed at designing a new category of adaptive security systems.
 
-Unlike conventional cryptographic primitives that rely on fixed computation graphs and static transformation pipelines, Xcrypt introduces a dynamic architecture built around:
+Unlike conventional cryptographic primitives that rely on fixed computation graphs and static transformation pipelines, Xaor introduces a dynamic architecture built around:
 
 * entropy-aware state mutation
 * compound computational hardness
@@ -19,9 +19,9 @@ Unlike conventional cryptographic primitives that rely on fixed computation grap
 * topology-driven transformations
 * memory-hard resistance
 
-Xcrypt is not intended to immediately replace established cryptographic systems such as AES, SHA-3, or Argon2.
+Xaor is not intended to immediately replace established cryptographic systems such as AES, SHA-3, or Argon2.
 
-Instead, Xcrypt explores a new architectural layer that builds on trusted primitives while introducing adaptive structural complexity.
+Instead, Xaor explores a new architectural layer that builds on trusted primitives while introducing adaptive structural complexity.
 
 ---
 
@@ -33,7 +33,7 @@ Can a cryptographic engine become significantly harder to attack if its internal
 
 ## Primary Objectives
 
-Xcrypt aims to achieve:
+Xaor aims to achieve:
 
 * high resistance to brute-force attacks
 * high resistance to GPU/ASIC optimization
@@ -45,7 +45,7 @@ Xcrypt aims to achieve:
 
 ## Core Engines
 
-Xcrypt consists of six major engines:
+Xaor consists of six major engines:
 
 ### 1. Entropy Engine
 
@@ -75,7 +75,7 @@ Produces verifier or ciphertext.
 
 ## Experimental Subsystems
 
-Xcrypt includes several experimental helper modules:
+Xaor includes several experimental helper modules:
 
 * **xnonce**: OsRng-based cryptographically secure nonce generator.
 * **xtoken**: Cryptographically secure token generator with optional prefixes.
@@ -88,7 +88,7 @@ Xcrypt includes several experimental helper modules:
 
 ## Security Warning
 
-Xcrypt is experimental.
+Xaor is experimental.
 
 It has not undergone:
 
@@ -97,7 +97,7 @@ It has not undergone:
 * production audit
 * adversarial benchmarking
 
-Do not use Xcrypt in production environments until security validation is complete.
+Do not use Xaor in production environments until security validation is complete.
 
 ---
 
@@ -106,16 +106,16 @@ Do not use Xcrypt in production environments until security validation is comple
 The repository now includes a built-in CLI for local use and automation:
 
 ```bash
-xcrypt hash "mypassword"
-xcrypt verify "mypassword" "$xcrypt$v=1$..."
-xcrypt errors
-xcrypt bench 5
-xcrypt --profile interactive config
+xaor hash "mypassword"
+xaor verify "mypassword" "$xaor$v=1$..."
+xaor errors
+xaor bench 5
+xaor --profile interactive config
 ```
 
 ### Commands
 
-* `hash <password>`: generate a stored Xcrypt hash
+* `hash <password>`: generate a stored Xaor hash
 * `verify <password> <stored-hash>`: verify a password against a stored hash
 * `errors`: print the built-in error catalog
 * `bench [iterations]`: run a simple hashing benchmark

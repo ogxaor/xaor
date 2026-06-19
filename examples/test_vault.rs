@@ -1,7 +1,7 @@
-use xcrypt::VaultEngine;
+use xaor::VaultEngine;
 
 fn main() {
-    let vault = VaultEngine::new("target/xcrypt-example.vault");
+    let vault = VaultEngine::new("target/xaor-example.vault");
     let key = b"0123456789abcdef0123456789abcdef";
 
     vault.store("api_key", b"secret-token", key).unwrap();

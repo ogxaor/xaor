@@ -2,7 +2,7 @@ use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-use crate::XcryptError;
+use crate::XaorError;
 
 #[derive(Debug, Clone)]
 pub struct TokenEngine {
@@ -11,22 +11,22 @@ pub struct TokenEngine {
 }
 
 impl TokenEngine {
-    pub fn new(length: usize) -> Result<Self, XcryptError> {
+    pub fn new(length: usize) -> Result<Self, XaorError> {
         Self::with_prefix(length, None::<String>)
     }
 
-    pub fn with_prefix<P>(length: usize, prefix: Option<P>) -> Result<Self, XcryptError>
+    pub fn with_prefix<P>(length: usize, prefix: Option<P>) -> Result<Self, XaorError>
     where
         P: Into<String>,
     {
         if length == 0 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "token length must be greater than zero".into(),
             ));
         }
 
         if length > 1024 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "token length must be 1024 bytes or less".into(),
             ));
         }
@@ -35,7 +35,7 @@ impl TokenEngine {
 
         if let Some(ref value) = prefix {
             if value.is_empty() {
-                return Err(XcryptError::InvalidConfig(
+                return Err(XaorError::InvalidConfig(
                     "token prefix must not be empty".into(),
                 ));
             }
@@ -58,7 +58,7 @@ impl TokenEngine {
         }
     }
 
-    pub fn generate(&self) -> Result<String, XcryptError> {
+    pub fn generate(&self) -> Result<String, XaorError> {
         let bytes = self.generate_bytes()?;
         let encoded = Self::encode_urlsafe(&bytes);
 
@@ -68,11 +68,11 @@ impl TokenEngine {
         })
     }
 
-    pub fn generate_bytes(&self) -> Result<Vec<u8>, XcryptError> {
+    pub fn generate_bytes(&self) -> Result<Vec<u8>, XaorError> {
         let mut token = vec![0u8; self.length];
         OsRng
             .try_fill_bytes(&mut token)
-            .map_err(|_| XcryptError::EntropyError)?;
+            .map_err(|_| XaorError::EntropyError)?;
         Ok(token)
     }
 

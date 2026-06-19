@@ -1,5 +1,5 @@
-use xcrypt::xid::config::{default_alphabet, XidConfig};
-use xcrypt::XidEngine;
+use xaor::xid::config::{default_alphabet, XidConfig};
+use xaor::XidEngine;
 
 fn main() {
     let random_engine = XidEngine::default_uuidish();

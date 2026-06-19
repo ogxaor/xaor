@@ -2,7 +2,7 @@ use base64::{engine::general_purpose, Engine as _};
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-use crate::XcryptError;
+use crate::XaorError;
 
 #[derive(Debug, Clone)]
 pub struct NonceEngine {
@@ -10,15 +10,15 @@ pub struct NonceEngine {
 }
 
 impl NonceEngine {
-    pub fn new(length: usize) -> Result<Self, XcryptError> {
+    pub fn new(length: usize) -> Result<Self, XaorError> {
         if length == 0 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "nonce length must be greater than zero".into(),
             ));
         }
 
         if length > 1024 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "nonce length must be 1024 bytes or less".into(),
             ));
         }
@@ -34,20 +34,20 @@ impl NonceEngine {
         Self { length: 16 }
     }
 
-    pub fn generate(&self) -> Result<Vec<u8>, XcryptError> {
+    pub fn generate(&self) -> Result<Vec<u8>, XaorError> {
         let mut nonce = vec![0u8; self.length];
         OsRng
             .try_fill_bytes(&mut nonce)
-            .map_err(|_| XcryptError::EntropyError)?;
+            .map_err(|_| XaorError::EntropyError)?;
         Ok(nonce)
     }
 
-    pub fn generate_hex(&self) -> Result<String, XcryptError> {
+    pub fn generate_hex(&self) -> Result<String, XaorError> {
         let nonce = self.generate()?;
         Ok(Self::encode_hex(&nonce))
     }
 
-    pub fn generate_base64(&self) -> Result<String, XcryptError> {
+    pub fn generate_base64(&self) -> Result<String, XaorError> {
         let nonce = self.generate()?;
         Ok(Self::encode_base64(&nonce))
     }

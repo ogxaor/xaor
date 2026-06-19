@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum XcryptError {
+pub enum XaorError {
     #[error("Entropy generation failed")]
     EntropyError,
 
@@ -42,7 +42,7 @@ pub enum XcryptError {
     UnsupportedStoredHashVersion(u8),
 }
 
-impl XcryptError {
+impl XaorError {
     pub fn code(&self) -> &'static str {
         match self {
             Self::EntropyError => "ENTROPY_ERROR",

@@ -1,4 +1,4 @@
-use xcrypt::entropy::EntropyEngine;
+use xaor::entropy::EntropyEngine;
 
 fn main() {
     let engine = EntropyEngine::new(64);

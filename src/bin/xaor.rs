@@ -2,11 +2,11 @@ use std::env;
 use std::process::ExitCode;
 use std::time::Instant;
 
-use xcrypt::{error_catalog, Xcrypt, XcryptConfig, XcryptMode};
+use xaor::{error_catalog, Xaor, XaorConfig, XaorMode};
 
 fn print_usage() {
     eprintln!(
-        "Usage:\n  xcrypt [--profile <interactive|standard|high-security|server>] <command>\n\nCommands:\n  hash <password>\n  verify <password> <stored-hash>\n  config\n  errors\n  bench [iterations]\n  mode <hash|encrypt>\n\nEnvironment:\n  XCRYPT_PROFILE=interactive|standard|high-security|server\n  XCRYPT_ROUNDS=<usize>\n  XCRYPT_MEMORY=<usize>\n  XCRYPT_NODES=<usize>\n  XCRYPT_OUTPUT_SIZE=<usize>\n  XCRYPT_MODE=hash|encrypt"
+        "Usage:\n  xaor [--profile <interactive|standard|high-security|server>] <command>\n\nCommands:\n  hash <password>\n  verify <password> <stored-hash>\n  config\n  errors\n  bench [iterations]\n  mode <hash|encrypt>\n\nEnvironment:\n  XAOR_PROFILE=interactive|standard|high-security|server\n  XAOR_ROUNDS=<usize>\n  XAOR_MEMORY=<usize>\n  XAOR_NODES=<usize>\n  XAOR_OUTPUT_SIZE=<usize>\n  XAOR_MODE=hash|encrypt"
     );
 }
 
@@ -28,9 +28,9 @@ fn parse_args() -> (Option<String>, String, Vec<String>) {
     (profile, String::new(), Vec::new())
 }
 
-fn load_xcrypt(profile_override: Option<&str>) -> Result<Xcrypt, String> {
-    let config = XcryptConfig::from_env_with_profile(profile_override).map_err(|err| err.to_string())?;
-    Xcrypt::new(config).map_err(|err| format!("{} ({})", err, err.code()))
+fn load_xaor(profile_override: Option<&str>) -> Result<Xaor, String> {
+    let config = XaorConfig::from_env_with_profile(profile_override).map_err(|err| err.to_string())?;
+    Xaor::new(config).map_err(|err| format!("{} ({})", err, err.code()))
 }
 
 fn main() -> ExitCode {
@@ -55,7 +55,7 @@ fn main() -> ExitCode {
                 return ExitCode::from(2);
             };
 
-            match load_xcrypt(profile.as_deref())
+            match load_xaor(profile.as_deref())
                 .and_then(|x| x.hash_password(&password).map_err(|e| format!("{} ({})", e, e.code())))
             {
                 Ok(hash) => {
@@ -78,7 +78,7 @@ fn main() -> ExitCode {
                 return ExitCode::from(2);
             };
 
-            match load_xcrypt(profile.as_deref())
+            match load_xaor(profile.as_deref())
                 .and_then(|x| x.verify_password(&password, &stored).map_err(|e| format!("{} ({})", e, e.code())))
             {
                 Ok(true) => {
@@ -95,7 +95,7 @@ fn main() -> ExitCode {
                 }
             }
         }
-        "config" => match XcryptConfig::from_env_with_profile(profile.as_deref()) {
+        "config" => match XaorConfig::from_env_with_profile(profile.as_deref()) {
             Ok(config) => {
                 println!("profile config:");
                 println!("  mode: {:?}", config.mode);
@@ -128,7 +128,7 @@ fn main() -> ExitCode {
                 None => 10,
             };
 
-            let engine = match load_xcrypt(profile.as_deref()) {
+            let engine = match load_xaor(profile.as_deref()) {
                 Ok(engine) => engine,
                 Err(err) => {
                     eprintln!("{err}");
@@ -166,7 +166,7 @@ fn main() -> ExitCode {
                 return ExitCode::from(2);
             };
 
-            match XcryptMode::parse(&mode) {
+            match XaorMode::parse(&mode) {
                 Some(parsed) => {
                     println!("{parsed:?}");
                     ExitCode::SUCCESS

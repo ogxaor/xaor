@@ -1,47 +1,47 @@
-use crate::core::config::XcryptConfig;
-use crate::core::error::XcryptError;
-use crate::core::engine::xcrypt::XcryptEngine;
+use crate::core::config::XaorConfig;
+use crate::core::error::XaorError;
+use crate::core::engine::xaor::XaorEngine;
 
-/// High-level Xcrypt interface for password hashing and verification.
+/// High-level Xaor interface for password hashing and verification.
 #[derive(Debug, Clone)]
-pub struct Xcrypt {
-    engine: XcryptEngine,
+pub struct Xaor {
+    engine: XaorEngine,
 }
 
-impl Default for Xcrypt {
+impl Default for Xaor {
     fn default() -> Self {
-        Self::new(XcryptConfig::default()).expect("default config is valid")
+        Self::new(XaorConfig::default()).expect("default config is valid")
     }
 }
 
-impl Xcrypt {
-    /// Create a new Xcrypt instance from a validated configuration.
-    pub fn new(config: XcryptConfig) -> Result<Self, XcryptError> {
+impl Xaor {
+    /// Create a new Xaor instance from a validated configuration.
+    pub fn new(config: XaorConfig) -> Result<Self, XaorError> {
         Ok(Self {
-            engine: XcryptEngine::new(config)?,
+            engine: XaorEngine::new(config)?,
         })
     }
 
     /// Hash a password using the configured pipeline.
-    pub fn hash_password(&self, password: &str) -> Result<String, XcryptError> {
+    pub fn hash_password(&self, password: &str) -> Result<String, XaorError> {
         self.engine.hash_password(password)
     }
 
-    /// Verify a password against a stored Xcrypt hash.
-    pub fn verify_password(&self, password: &str, stored: &str) -> Result<bool, XcryptError> {
+    /// Verify a password against a stored Xaor hash.
+    pub fn verify_password(&self, password: &str, stored: &str) -> Result<bool, XaorError> {
         self.engine.verify_password(password, stored)
     }
 
-    /// Create an Xcrypt instance from environment variables.
-    pub fn from_env() -> Result<Self, XcryptError> {
-        let config = XcryptConfig::from_env().map_err(XcryptError::InvalidConfig)?;
+    /// Create an Xaor instance from environment variables.
+    pub fn from_env() -> Result<Self, XaorError> {
+        let config = XaorConfig::from_env().map_err(XaorError::InvalidConfig)?;
         Self::new(config)
     }
 }
 
-/// Return the catalog of supported Xcrypt error codes and short descriptions.
+/// Return the catalog of supported Xaor error codes and short descriptions.
 pub fn error_catalog() -> &'static [(&'static str, &'static str)] {
-    XcryptError::catalog()
+    XaorError::catalog()
 }
 
 pub fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {

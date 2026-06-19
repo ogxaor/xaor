@@ -7,7 +7,7 @@ use blake3::Hasher;
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-use crate::XcryptError;
+use crate::XaorError;
 
 use super::record::VaultRecord;
 
@@ -30,7 +30,7 @@ impl VaultEngine {
         name: &str,
         secret: &[u8],
         master_key: &[u8],
-    ) -> Result<(), XcryptError> {
+    ) -> Result<(), XaorError> {
         validate_name(name)?;
         validate_master_key(master_key)?;
 
@@ -54,7 +54,7 @@ impl VaultEngine {
         &self,
         name: &str,
         master_key: &[u8],
-    ) -> Result<Option<Vec<u8>>, XcryptError> {
+    ) -> Result<Option<Vec<u8>>, XaorError> {
         validate_name(name)?;
         validate_master_key(master_key)?;
 
@@ -66,7 +66,7 @@ impl VaultEngine {
         Ok(Some(xor_crypt(&record.ciphertext, master_key, &record.nonce)))
     }
 
-    pub fn delete(&self, name: &str) -> Result<bool, XcryptError> {
+    pub fn delete(&self, name: &str) -> Result<bool, XaorError> {
         validate_name(name)?;
 
         let mut records = self.load_all_records()?;
@@ -81,7 +81,7 @@ impl VaultEngine {
         Ok(true)
     }
 
-    pub fn list(&self) -> Result<Vec<String>, XcryptError> {
+    pub fn list(&self) -> Result<Vec<String>, XaorError> {
         Ok(self
             .load_all_records()?
             .into_iter()
@@ -89,18 +89,18 @@ impl VaultEngine {
             .collect())
     }
 
-    pub fn exists(&self, name: &str) -> Result<bool, XcryptError> {
+    pub fn exists(&self, name: &str) -> Result<bool, XaorError> {
         validate_name(name)?;
         Ok(self.list()?.iter().any(|entry| entry == name))
     }
 
-    fn load_all_records(&self) -> Result<Vec<VaultRecord>, XcryptError> {
+    fn load_all_records(&self) -> Result<Vec<VaultRecord>, XaorError> {
         if !self.path.exists() {
             return Ok(Vec::new());
         }
 
         let content = fs::read_to_string(&self.path)
-            .map_err(|_| XcryptError::EncryptionFailed)?;
+            .map_err(|_| XaorError::EncryptionFailed)?;
 
         let mut records = Vec::new();
 
@@ -110,17 +110,17 @@ impl VaultEngine {
             }
 
             let record = VaultRecord::parse(line)
-                .map_err(|_| XcryptError::MalformedStoredHash("invalid vault record".into()))?;
+                .map_err(|_| XaorError::MalformedStoredHash("invalid vault record".into()))?;
             records.push(record);
         }
 
         Ok(records)
     }
 
-    fn write_records(&self, records: &[VaultRecord]) -> Result<(), XcryptError> {
+    fn write_records(&self, records: &[VaultRecord]) -> Result<(), XaorError> {
         if let Some(parent) = self.path.parent() {
             if !parent.as_os_str().is_empty() {
-                fs::create_dir_all(parent).map_err(|_| XcryptError::EncryptionFailed)?;
+                fs::create_dir_all(parent).map_err(|_| XaorError::EncryptionFailed)?;
             }
         }
 
@@ -130,20 +130,20 @@ impl VaultEngine {
             .collect::<Vec<_>>()
             .join("\n");
 
-        fs::write(&self.path, serialized).map_err(|_| XcryptError::EncryptionFailed)?;
+        fs::write(&self.path, serialized).map_err(|_| XaorError::EncryptionFailed)?;
         Ok(())
     }
 }
 
-fn validate_name(name: &str) -> Result<(), XcryptError> {
+fn validate_name(name: &str) -> Result<(), XaorError> {
     if name.is_empty() {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "vault name must not be empty".into(),
         ));
     }
 
     if name.chars().any(|c| c == ':' || c == '\n' || c == '\r') {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "vault name contains unsupported characters".into(),
         ));
     }
@@ -151,9 +151,9 @@ fn validate_name(name: &str) -> Result<(), XcryptError> {
     Ok(())
 }
 
-fn validate_master_key(master_key: &[u8]) -> Result<(), XcryptError> {
+fn validate_master_key(master_key: &[u8]) -> Result<(), XaorError> {
     if master_key.len() < 16 {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "master key must be at least 16 bytes".into(),
         ));
     }
@@ -161,11 +161,11 @@ fn validate_master_key(master_key: &[u8]) -> Result<(), XcryptError> {
     Ok(())
 }
 
-fn random_nonce(length: usize) -> Result<Vec<u8>, XcryptError> {
+fn random_nonce(length: usize) -> Result<Vec<u8>, XaorError> {
     let mut nonce = vec![0u8; length];
     OsRng
         .try_fill_bytes(&mut nonce)
-        .map_err(|_| XcryptError::EntropyError)?;
+        .map_err(|_| XaorError::EntropyError)?;
     Ok(nonce)
 }
 
@@ -191,7 +191,7 @@ fn xor_crypt(input: &[u8], master_key: &[u8], nonce: &[u8]) -> Vec<u8> {
 
 fn derive_keystream(master_key: &[u8], nonce: &[u8], counter: u64) -> Vec<u8> {
     let mut hasher = Hasher::new();
-    hasher.update(b"xcrypt.xvault.v1");
+    hasher.update(b"xaor.xvault.v1");
     hasher.update(master_key);
     hasher.update(nonce);
     hasher.update(&counter.to_le_bytes());
@@ -202,7 +202,7 @@ fn derive_keystream(master_key: &[u8], nonce: &[u8], counter: u64) -> Vec<u8> {
 
 impl Default for VaultEngine {
     fn default() -> Self {
-        Self::new("xcrypt.vault")
+        Self::new("xaor.vault")
     }
 }
 
@@ -216,7 +216,7 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
-        std::env::temp_dir().join(format!("xcrypt-{name}-{stamp}.vault"))
+        std::env::temp_dir().join(format!("xaor-{name}-{stamp}.vault"))
     }
 
     #[test]

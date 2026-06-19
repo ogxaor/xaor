@@ -1,2 +1,2 @@
-pub mod xcrypt;
+pub mod xaor;
 pub mod mode;

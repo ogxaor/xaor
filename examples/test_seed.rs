@@ -1,11 +1,11 @@
-use xcrypt::engine::xcrypt::XcryptEngine;
-use xcrypt::{config::XcryptMode, XcryptConfig};
+use xaor::engine::xaor::XaorEngine;
+use xaor::{config::XaorMode, XaorConfig};
 
 fn main() {
-    let mut config = XcryptConfig::default();
-    config.mode = XcryptMode::Encrypt;
+    let mut config = XaorConfig::default();
+    config.mode = XaorMode::Encrypt;
 
-    let engine = XcryptEngine::new(config).unwrap();
+    let engine = XaorEngine::new(config).unwrap();
 
     let seed = engine.generate_seed(b"password123", None).unwrap();
 

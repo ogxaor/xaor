@@ -8,32 +8,32 @@ use crate::pipeline::{
 };
 use crate::serialization::StoredHash;
 use crate::seed::SeedEngine;
-use crate::{constant_time_eq, XcryptConfig, XcryptError};
+use crate::{constant_time_eq, XaorConfig, XaorError};
 
 #[derive(Debug, Clone)]
-pub struct XcryptEngine {
-    config: XcryptConfig,
+pub struct XaorEngine {
+    config: XaorConfig,
 }
 
-impl XcryptEngine {
-    pub fn new(config: XcryptConfig) -> Result<Self, XcryptError> {
+impl XaorEngine {
+    pub fn new(config: XaorConfig) -> Result<Self, XaorError> {
         config
             .validate()
-            .map_err(crate::error::XcryptError::InvalidConfig)?;
+            .map_err(crate::error::XaorError::InvalidConfig)?;
 
         Ok(Self { config })
     }
 
-    fn build_entropy(&self, salt: Option<&[u8]>) -> Result<EntropyVector, XcryptError> {
+    fn build_entropy(&self, salt: Option<&[u8]>) -> Result<EntropyVector, XaorError> {
         match self.config.mode {
-            crate::config::XcryptMode::Hash => {
-                let salt = salt.ok_or(XcryptError::SeedError)?;
+            crate::config::XaorMode::Hash => {
+                let salt = salt.ok_or(XaorError::SeedError)?;
 
                 Ok(EntropyVector {
                     bytes: salt.to_vec(),
                 })
             }
-            crate::config::XcryptMode::Encrypt => {
+            crate::config::XaorMode::Encrypt => {
                 let entropy_engine = EntropyEngine::new(self.config.output_size);
                 entropy_engine.generate()
             }
@@ -44,7 +44,7 @@ impl XcryptEngine {
         &self,
         input: &[u8],
         salt: Option<&[u8]>,
-    ) -> Result<Vec<u8>, XcryptError> {
+    ) -> Result<Vec<u8>, XaorError> {
         let entropy = self.build_entropy(salt)?;
         let seed_engine = SeedEngine::new();
         let seed = seed_engine.generate(input, &entropy)?;
@@ -56,7 +56,7 @@ impl XcryptEngine {
         &self,
         input: &[u8],
         salt: Option<&[u8]>,
-    ) -> Result<Vec<u8>, XcryptError> {
+    ) -> Result<Vec<u8>, XaorError> {
         let entropy = self.build_entropy(salt)?;
 
         let mut pipeline = PipelineRunner::new();
@@ -71,7 +71,7 @@ impl XcryptEngine {
         Ok(pipeline.run(input.to_vec()))
     }
 
-    pub fn hash_password(&self, password: &str) -> Result<String, XcryptError> {
+    pub fn hash_password(&self, password: &str) -> Result<String, XaorError> {
         let mut salt = [0u8; 16];
         rand::thread_rng().fill_bytes(&mut salt);
 
@@ -81,7 +81,7 @@ impl XcryptEngine {
         let hash_b64 = general_purpose::STANDARD.encode(hash);
 
         Ok(format!(
-            "$xcrypt$v=1$m={}$r={}$n={}${}${}",
+            "$xaor$v=1$m={}$r={}$n={}${}${}",
             self.config.memory_size_mb,
             self.config.rounds,
             self.config.node_count,
@@ -90,7 +90,7 @@ impl XcryptEngine {
         ))
     }
 
-    pub fn verify_password(&self, password: &str, stored: &str) -> Result<bool, XcryptError> {
+    pub fn verify_password(&self, password: &str, stored: &str) -> Result<bool, XaorError> {
         let stored = StoredHash::parse(stored)?;
         let computed = self.process(password.as_bytes(), Some(&stored.salt))?;
 

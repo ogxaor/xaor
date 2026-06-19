@@ -1,4 +1,4 @@
-use xcrypt::{ProofConfig, ProofEngine};
+use xaor::{ProofConfig, ProofEngine};
 
 fn main() {
     let engine = ProofEngine::new(ProofConfig::low()).unwrap();

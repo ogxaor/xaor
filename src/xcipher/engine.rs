@@ -1,6 +1,6 @@
 //! Experimental symmetric cipher providing authenticated encryption (AEAD).
 
-use crate::{constant_time_eq, XcryptError};
+use crate::{constant_time_eq, XaorError};
 
 #[derive(Debug, Clone, Default)]
 pub struct CipherEngine;
@@ -20,7 +20,7 @@ impl CipherEngine {
         key: &[u8],
         nonce: &[u8],
         associated_data: &[u8],
-    ) -> Result<Vec<u8>, XcryptError> {
+    ) -> Result<Vec<u8>, XaorError> {
         validate_key_and_nonce(key, nonce)?;
 
         let ciphertext = xor_crypt(plaintext, key, nonce);
@@ -42,18 +42,18 @@ impl CipherEngine {
         key: &[u8],
         nonce: &[u8],
         associated_data: &[u8],
-    ) -> Result<Vec<u8>, XcryptError> {
+    ) -> Result<Vec<u8>, XaorError> {
         validate_key_and_nonce(key, nonce)?;
 
         if ciphertext_and_tag.len() < 32 {
-            return Err(XcryptError::DecryptionFailed);
+            return Err(XaorError::DecryptionFailed);
         }
 
         let (ciphertext, tag) = ciphertext_and_tag.split_at(ciphertext_and_tag.len() - 32);
         let expected_tag = compute_tag(associated_data, ciphertext, key, nonce);
 
         if !constant_time_eq(&expected_tag, tag) {
-            return Err(XcryptError::DecryptionFailed);
+            return Err(XaorError::DecryptionFailed);
         }
 
         let plaintext = xor_crypt(ciphertext, key, nonce);
@@ -61,15 +61,15 @@ impl CipherEngine {
     }
 }
 
-fn validate_key_and_nonce(key: &[u8], nonce: &[u8]) -> Result<(), XcryptError> {
+fn validate_key_and_nonce(key: &[u8], nonce: &[u8]) -> Result<(), XaorError> {
     if key.len() < 16 {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "key must be at least 16 bytes".into(),
         ));
     }
 
     if nonce.len() < 12 {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "nonce must be at least 12 bytes".into(),
         ));
     }
@@ -99,7 +99,7 @@ fn xor_crypt(input: &[u8], key: &[u8], nonce: &[u8]) -> Vec<u8> {
 
 fn derive_keystream(key: &[u8], nonce: &[u8], counter: u64) -> Vec<u8> {
     let mut hasher = blake3::Hasher::new();
-    hasher.update(b"xcrypt.xcipher.keystream.v1");
+    hasher.update(b"xaor.xcipher.keystream.v1");
     hasher.update(key);
     hasher.update(nonce);
     hasher.update(&counter.to_le_bytes());
@@ -110,7 +110,7 @@ fn derive_keystream(key: &[u8], nonce: &[u8], counter: u64) -> Vec<u8> {
 
 fn compute_tag(associated_data: &[u8], ciphertext: &[u8], key: &[u8], nonce: &[u8]) -> [u8; 32] {
     let mut hasher = blake3::Hasher::new();
-    hasher.update(b"xcrypt.xcipher.mac.v1");
+    hasher.update(b"xaor.xcipher.mac.v1");
     hasher.update(key);
     hasher.update(nonce);
     hasher.update(associated_data);
@@ -189,7 +189,7 @@ mod tests {
         ciphertext[0] ^= 0x01;
 
         let err = engine.decrypt(&ciphertext, key, nonce, ad).unwrap_err();
-        assert!(matches!(err, XcryptError::DecryptionFailed));
+        assert!(matches!(err, XaorError::DecryptionFailed));
     }
 
     #[test]
@@ -203,6 +203,6 @@ mod tests {
         let ciphertext = engine.encrypt(plaintext, key, nonce, ad).unwrap();
 
         let err = engine.decrypt(&ciphertext, key, nonce, b"different-metadata").unwrap_err();
-        assert!(matches!(err, XcryptError::DecryptionFailed));
+        assert!(matches!(err, XaorError::DecryptionFailed));
     }
 }

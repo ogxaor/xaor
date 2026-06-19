@@ -6,7 +6,7 @@ use blake3::Hasher;
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-use crate::XcryptError;
+use crate::XaorError;
 
 use super::challenge::{ProofChallenge, ProofSolution};
 use super::config::ProofConfig;
@@ -17,9 +17,9 @@ pub struct ProofEngine {
 }
 
 impl ProofEngine {
-    pub fn new(config: ProofConfig) -> Result<Self, XcryptError> {
+    pub fn new(config: ProofConfig) -> Result<Self, XaorError> {
         ProofConfig::with_options(config.difficulty_bits, config.ttl_secs)
-            .map_err(XcryptError::InvalidConfig)?;
+            .map_err(XaorError::InvalidConfig)?;
         Ok(Self { config })
     }
 
@@ -29,7 +29,7 @@ impl ProofEngine {
         }
     }
 
-    pub fn challenge(&self, subject: &str) -> Result<ProofChallenge, XcryptError> {
+    pub fn challenge(&self, subject: &str) -> Result<ProofChallenge, XaorError> {
         validate_subject(subject)?;
 
         let issued_at = now_secs()?;
@@ -48,7 +48,7 @@ impl ProofEngine {
         })
     }
 
-    pub fn solve(&self, challenge: &ProofChallenge) -> Result<ProofSolution, XcryptError> {
+    pub fn solve(&self, challenge: &ProofChallenge) -> Result<ProofSolution, XaorError> {
         self.validate_challenge(challenge)?;
 
         let mut nonce = 0u64;
@@ -73,7 +73,7 @@ impl ProofEngine {
         &self,
         challenge: &ProofChallenge,
         solution: &ProofSolution,
-    ) -> Result<bool, XcryptError> {
+    ) -> Result<bool, XaorError> {
         self.validate_challenge(challenge)?;
 
         if challenge.challenge_id != solution.challenge_id {
@@ -87,22 +87,22 @@ impl ProofEngine {
             && hash.to_hex().as_str() == solution.hash_hex)
     }
 
-    pub fn validate_challenge(&self, challenge: &ProofChallenge) -> Result<(), XcryptError> {
+    pub fn validate_challenge(&self, challenge: &ProofChallenge) -> Result<(), XaorError> {
         if challenge.version != 1 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "unsupported proof challenge version".into(),
             ));
         }
 
         if challenge.difficulty_bits == 0 || challenge.difficulty_bits > 256 {
-            return Err(XcryptError::InvalidConfig(
+            return Err(XaorError::InvalidConfig(
                 "invalid proof difficulty".into(),
             ));
         }
 
         let now = now_secs()?;
         if now > challenge.expires_at {
-            return Err(XcryptError::VerificationFailed);
+            return Err(XaorError::VerificationFailed);
         }
 
         Ok(())
@@ -110,7 +110,7 @@ impl ProofEngine {
 
     fn hash(&self, challenge: &ProofChallenge, nonce: u64) -> blake3::Hash {
         let mut hasher = Hasher::new();
-        hasher.update(b"xcrypt.xproof.v1");
+        hasher.update(b"xaor.xproof.v1");
         hasher.update(challenge.challenge_id.as_bytes());
         hasher.update(challenge.subject.as_bytes());
         hasher.update(&challenge.issued_at.to_le_bytes());
@@ -122,35 +122,35 @@ impl ProofEngine {
     }
 }
 
-fn now_secs() -> Result<u64, XcryptError> {
+fn now_secs() -> Result<u64, XaorError> {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|duration| duration.as_secs())
-        .map_err(|_| XcryptError::VerificationFailed)
+        .map_err(|_| XaorError::VerificationFailed)
 }
 
-fn random_bytes(len: usize) -> Result<Vec<u8>, XcryptError> {
+fn random_bytes(len: usize) -> Result<Vec<u8>, XaorError> {
     let mut bytes = vec![0u8; len];
     OsRng
         .try_fill_bytes(&mut bytes)
-        .map_err(|_| XcryptError::EntropyError)?;
+        .map_err(|_| XaorError::EntropyError)?;
     Ok(bytes)
 }
 
-fn random_hex(len: usize) -> Result<String, XcryptError> {
+fn random_hex(len: usize) -> Result<String, XaorError> {
     let bytes = random_bytes(len)?;
     Ok(hex::encode(bytes))
 }
 
-fn validate_subject(subject: &str) -> Result<(), XcryptError> {
+fn validate_subject(subject: &str) -> Result<(), XaorError> {
     if subject.is_empty() {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "proof subject must not be empty".into(),
         ));
     }
 
     if subject.len() > 256 {
-        return Err(XcryptError::InvalidConfig(
+        return Err(XaorError::InvalidConfig(
             "proof subject too long".into(),
         ));
     }

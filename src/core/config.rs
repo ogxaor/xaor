@@ -1,10 +1,10 @@
 #[derive(Debug, Clone)]
-pub enum XcryptMode {
+pub enum XaorMode {
     Hash,
     Encrypt,
 }
 
-impl XcryptMode {
+impl XaorMode {
     pub fn parse(value: &str) -> Option<Self> {
         match value.to_ascii_lowercase().as_str() {
             "hash" => Some(Self::Hash),
@@ -15,34 +15,34 @@ impl XcryptMode {
 }
 
 #[derive(Debug, Clone)]
-pub struct XcryptConfig {
+pub struct XaorConfig {
     pub rounds: usize,
     pub memory_size_mb: usize,
     pub node_count: usize,
     pub output_size: usize,
-    pub mode: XcryptMode,
+    pub mode: XaorMode,
 }
 
-impl Default for XcryptConfig {
+impl Default for XaorConfig {
     fn default() -> Self {
         Self {
             rounds: 16,
             memory_size_mb: 256,
             node_count: 32,
             output_size: 64,
-            mode: XcryptMode::Hash,
+            mode: XaorMode::Hash,
         }
     }
 }
 
-impl XcryptConfig {
+impl XaorConfig {
     pub fn interactive() -> Self {
         Self {
             rounds: 8,
             memory_size_mb: 64,
             node_count: 16,
             output_size: 64,
-            mode: XcryptMode::Hash,
+            mode: XaorMode::Hash,
         }
     }
 
@@ -52,7 +52,7 @@ impl XcryptConfig {
             memory_size_mb: 256,
             node_count: 32,
             output_size: 64,
-            mode: XcryptMode::Hash,
+            mode: XaorMode::Hash,
         }
     }
 
@@ -62,7 +62,7 @@ impl XcryptConfig {
             memory_size_mb: 1024,
             node_count: 64,
             output_size: 64,
-            mode: XcryptMode::Hash,
+            mode: XaorMode::Hash,
         }
     }
 
@@ -72,7 +72,7 @@ impl XcryptConfig {
             memory_size_mb: 512,
             node_count: 48,
             output_size: 64,
-            mode: XcryptMode::Hash,
+            mode: XaorMode::Hash,
         }
     }
 
@@ -94,39 +94,39 @@ impl XcryptConfig {
         let mut config = profile_override
             .and_then(Self::from_profile)
             .or_else(|| {
-                std::env::var("XCRYPT_PROFILE")
+                std::env::var("XAOR_PROFILE")
                     .ok()
                     .and_then(|profile| Self::from_profile(&profile))
             })
             .unwrap_or_default();
 
-        if let Ok(rounds) = std::env::var("XCRYPT_ROUNDS") {
+        if let Ok(rounds) = std::env::var("XAOR_ROUNDS") {
             config.rounds = rounds
                 .parse::<usize>()
-                .map_err(|_| "XCRYPT_ROUNDS must be a positive integer".to_string())?;
+                .map_err(|_| "XAOR_ROUNDS must be a positive integer".to_string())?;
         }
 
-        if let Ok(memory) = std::env::var("XCRYPT_MEMORY") {
+        if let Ok(memory) = std::env::var("XAOR_MEMORY") {
             config.memory_size_mb = memory
                 .parse::<usize>()
-                .map_err(|_| "XCRYPT_MEMORY must be a positive integer".to_string())?;
+                .map_err(|_| "XAOR_MEMORY must be a positive integer".to_string())?;
         }
 
-        if let Ok(nodes) = std::env::var("XCRYPT_NODES") {
+        if let Ok(nodes) = std::env::var("XAOR_NODES") {
             config.node_count = nodes
                 .parse::<usize>()
-                .map_err(|_| "XCRYPT_NODES must be a positive integer".to_string())?;
+                .map_err(|_| "XAOR_NODES must be a positive integer".to_string())?;
         }
 
-        if let Ok(output_size) = std::env::var("XCRYPT_OUTPUT_SIZE") {
+        if let Ok(output_size) = std::env::var("XAOR_OUTPUT_SIZE") {
             config.output_size = output_size
                 .parse::<usize>()
-                .map_err(|_| "XCRYPT_OUTPUT_SIZE must be a positive integer".to_string())?;
+                .map_err(|_| "XAOR_OUTPUT_SIZE must be a positive integer".to_string())?;
         }
 
-        if let Ok(mode) = std::env::var("XCRYPT_MODE") {
-            config.mode = XcryptMode::parse(&mode)
-                .ok_or_else(|| "XCRYPT_MODE must be either 'hash' or 'encrypt'".to_string())?;
+        if let Ok(mode) = std::env::var("XAOR_MODE") {
+            config.mode = XaorMode::parse(&mode)
+                .ok_or_else(|| "XAOR_MODE must be either 'hash' or 'encrypt'".to_string())?;
         }
 
         config.validate()?;

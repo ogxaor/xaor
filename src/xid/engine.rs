@@ -4,7 +4,7 @@ use rand::RngCore;
 use crate::xid::config::{
     default_alphabet, validate_alphabet, validate_length, XidConfig,
 };
-use crate::XcryptError;
+use crate::XaorError;
 
 #[derive(Debug, Clone)]
 pub struct XidEngine {
@@ -12,13 +12,13 @@ pub struct XidEngine {
 }
 
 impl XidEngine {
-    pub fn new(config: XidConfig) -> Result<Self, XcryptError> {
-        validate_length(config.length).map_err(XcryptError::InvalidConfig)?;
-        validate_alphabet(&config.alphabet).map_err(XcryptError::InvalidConfig)?;
+    pub fn new(config: XidConfig) -> Result<Self, XaorError> {
+        validate_length(config.length).map_err(XaorError::InvalidConfig)?;
+        validate_alphabet(&config.alphabet).map_err(XaorError::InvalidConfig)?;
 
         if let Some(ref prefix) = config.prefix {
             if prefix.is_empty() {
-                return Err(XcryptError::InvalidConfig(
+                return Err(XaorError::InvalidConfig(
                     "prefix must not be empty".into(),
                 ));
             }
@@ -33,19 +33,19 @@ impl XidEngine {
         }
     }
 
-    pub fn generate(&self) -> Result<String, XcryptError> {
+    pub fn generate(&self) -> Result<String, XaorError> {
         let mut seed = vec![0u8; 32];
         OsRng
             .try_fill_bytes(&mut seed)
-            .map_err(|_| XcryptError::EntropyError)?;
+            .map_err(|_| XaorError::EntropyError)?;
         self.generate_from_seed(&seed, b"random")
     }
 
-    pub fn generate_deterministic(&self, context: &[u8]) -> Result<String, XcryptError> {
+    pub fn generate_deterministic(&self, context: &[u8]) -> Result<String, XaorError> {
         self.generate_from_seed(context, b"deterministic")
     }
 
-    pub fn validate(&self, value: &str) -> Result<bool, XcryptError> {
+    pub fn validate(&self, value: &str) -> Result<bool, XaorError> {
         let body = self.strip_prefix(value)?;
 
         if body.is_empty() {
@@ -67,7 +67,7 @@ impl XidEngine {
         Ok(self.is_valid_payload(body))
     }
 
-    pub fn validate_checksum(&self, value: &str) -> Result<bool, XcryptError> {
+    pub fn validate_checksum(&self, value: &str) -> Result<bool, XaorError> {
         if !self.config.checksum {
             return Ok(true);
         }
@@ -80,16 +80,16 @@ impl XidEngine {
         Ok(checksum == expected)
     }
 
-    pub fn strip_prefix<'a>(&self, value: &'a str) -> Result<&'a str, XcryptError> {
+    pub fn strip_prefix<'a>(&self, value: &'a str) -> Result<&'a str, XaorError> {
         match &self.config.prefix {
             Some(prefix) => value
                 .strip_prefix(prefix)
-                .ok_or_else(|| XcryptError::InvalidConfig("missing configured prefix".into())),
+                .ok_or_else(|| XaorError::InvalidConfig("missing configured prefix".into())),
             None => Ok(value),
         }
     }
 
-    fn generate_from_seed(&self, seed: &[u8], mode_tag: &[u8]) -> Result<String, XcryptError> {
+    fn generate_from_seed(&self, seed: &[u8], mode_tag: &[u8]) -> Result<String, XaorError> {
         let mut body = self.encode_seed(seed, mode_tag, self.config.length)?;
 
         if self.config.checksum {
@@ -110,7 +110,7 @@ impl XidEngine {
         seed: &[u8],
         mode_tag: &[u8],
         length: usize,
-    ) -> Result<String, XcryptError> {
+    ) -> Result<String, XaorError> {
         let alphabet = self.config.alphabet.as_bytes();
         let alphabet_len = alphabet.len();
         let rejection_limit = (u16::MAX as usize + 1) / alphabet_len * alphabet_len;
@@ -143,7 +143,7 @@ impl XidEngine {
 
     fn expand_pool(&self, seed: &[u8], mode_tag: &[u8], counter: u64) -> Vec<u8> {
         let mut hasher = blake3::Hasher::new();
-        hasher.update(b"xcrypt.xid.v1");
+        hasher.update(b"xaor.xid.v1");
         hasher.update(mode_tag);
         hasher.update(seed);
         hasher.update(&counter.to_le_bytes());

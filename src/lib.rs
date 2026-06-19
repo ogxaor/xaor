@@ -21,10 +21,10 @@ pub use crate::core::{
 };
 
 // Re-export public APIs
-pub use core::config::{XcryptConfig, XcryptMode};
-pub use core::error::XcryptError;
+pub use core::config::{XaorConfig, XaorMode};
+pub use core::error::XaorError;
 pub use core::serialization::StoredHash;
-pub use xhash::{constant_time_eq, error_catalog, Xcrypt};
+pub use xhash::{constant_time_eq, error_catalog, Xaor};
 pub use xid::{XidConfig, XidEngine};
 pub use xnonce::NonceEngine;
 pub use xproof::{ProofConfig, ProofEngine};

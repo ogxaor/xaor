@@ -1,9 +1,9 @@
-use xcrypt::engine::xcrypt::XcryptEngine;
-use xcrypt::XcryptConfig;
+use xaor::engine::xaor::XaorEngine;
+use xaor::XaorConfig;
 
 fn main() {
-    let config = XcryptConfig::default();
-    let engine = match XcryptEngine::new(config) {
+    let config = XaorConfig::default();
+    let engine = match XaorEngine::new(config) {
         Ok(engine) => engine,
         Err(err) => {
             eprintln!("failed to create engine: {} ({})", err, err.code());

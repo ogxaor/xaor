@@ -1,7 +1,7 @@
 use blake3::Hasher;
 
 use crate::entropy::EntropyVector;
-use crate::error::XcryptError;
+use crate::error::XaorError;
 
 #[derive(Debug, Clone)]
 pub struct Seed {
@@ -19,7 +19,7 @@ impl SeedEngine {
         &self,
         input: &[u8],
         entropy: &EntropyVector,
-    ) -> Result<Seed, XcryptError> {
+    ) -> Result<Seed, XaorError> {
         let mut hasher = Hasher::new();
 
         hasher.update(input);

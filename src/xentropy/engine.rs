@@ -1,7 +1,7 @@
 use rand::rngs::OsRng;
 use rand::RngCore;
 
-use crate::error::XcryptError;
+use crate::error::XaorError;
 
 #[derive(Debug, Clone)]
 pub struct EntropyVector {
@@ -23,12 +23,12 @@ impl EntropyEngine {
         Self { output_size }
     }
 
-    pub fn generate(&self) -> Result<EntropyVector, XcryptError> {
+    pub fn generate(&self) -> Result<EntropyVector, XaorError> {
         let mut buffer = vec![0u8; self.output_size];
 
         OsRng
             .try_fill_bytes(&mut buffer)
-            .map_err(|_| XcryptError::EntropyError)?;
+            .map_err(|_| XaorError::EntropyError)?;
 
         Ok(EntropyVector { bytes: buffer })
     }
