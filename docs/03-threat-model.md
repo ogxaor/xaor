@@ -13,7 +13,7 @@ We must define:
 * who attacks
 * what resources they have
 * what capabilities they possess
-* what Xcrypt can and cannot defend against
+* what Xaor can and cannot defend against
 
 ---
 
@@ -38,7 +38,7 @@ Capabilities:
 Risk:
 Low to moderate.
 
-Xcrypt should strongly resist this category.
+Xaor should strongly resist this category.
 
 ---
 
@@ -59,7 +59,7 @@ Capabilities:
 Risk:
 High.
 
-This is a primary Xcrypt target.
+This is a primary Xaor target.
 
 ---
 
@@ -80,7 +80,7 @@ Capabilities:
 Risk:
 Extreme.
 
-Xcrypt may increase attacker cost but cannot guarantee protection.
+Xaor may increase attacker cost but cannot guarantee protection.
 
 ---
 
@@ -144,7 +144,7 @@ Attackers may design custom chips.
 
 Static algorithms help ASICs.
 
-Xcrypt attempts to resist by making universal optimization difficult.
+Xaor attempts to resist by making universal optimization difficult.
 
 ---
 
@@ -193,7 +193,7 @@ Defense:
 
 ---
 
-# Threats Xcrypt Does NOT Solve
+# Threats Xaor Does NOT Solve
 
 Important limitations.
 
@@ -209,7 +209,7 @@ Example:
 
 Keylogger records plaintext.
 
-Xcrypt cannot prevent this.
+Xaor cannot prevent this.
 
 ---
 
@@ -235,7 +235,7 @@ Security cannot resist all real-world force.
 
 # Security Goals
 
-Xcrypt aims to maximize attacker difficulty for:
+Xaor aims to maximize attacker difficulty for:
 
 * offline cracking
 * verifier attacks
@@ -248,7 +248,7 @@ It does not claim universal protection.
 
 # Security Assumptions
 
-Xcrypt assumes:
+Xaor assumes:
 
 * secure RNG exists
 * implementation is correct
@@ -263,7 +263,7 @@ Violation of assumptions weakens security.
 
 Threat modeling defines realistic expectations.
 
-Xcrypt is primarily designed against:
+Xaor is primarily designed against:
 
 * brute force
 * GPU cracking

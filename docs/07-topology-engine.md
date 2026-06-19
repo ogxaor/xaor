@@ -4,7 +4,7 @@
 
 # Introduction
 
-The Topology Engine is the first truly unique component of Xcrypt.
+The Topology Engine is the first truly unique component of Xaor.
 
 Traditional cryptographic algorithms use fixed computation graphs.
 
@@ -14,7 +14,7 @@ Examples:
 * fixed transformations
 * fixed state transitions
 
-Xcrypt instead generates dynamic computational topology.
+Xaor instead generates dynamic computational topology.
 
 This means every input may produce a different internal graph.
 
@@ -203,7 +203,7 @@ Possible structures:
 * branching
 * layered
 
-Xcrypt supports hybrid graphs.
+Xaor supports hybrid graphs.
 
 Example:
 
@@ -272,6 +272,6 @@ These become inputs to the Compound Engine.
 
 # Summary
 
-The Topology Engine gives Xcrypt its adaptive structure.
+The Topology Engine gives Xaor its adaptive structure.
 
-Instead of fixed pipelines, Xcrypt uses dynamically generated computational graphs to increase structural diversity and attacker uncertainty.
+Instead of fixed pipelines, Xaor uses dynamically generated computational graphs to increase structural diversity and attacker uncertainty.

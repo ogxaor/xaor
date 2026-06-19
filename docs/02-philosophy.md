@@ -1,10 +1,10 @@
-# Xcrypt Philosophy
+# Xaor Philosophy
 
 ---
 
 # Introduction
 
-Before designing algorithms, mathematics, or implementations, it is necessary to define the philosophical principles that guide Xcrypt.
+Before designing algorithms, mathematics, or implementations, it is necessary to define the philosophical principles that guide Xaor.
 
 Every cryptographic system implicitly carries assumptions about:
 
@@ -17,9 +17,9 @@ Every cryptographic system implicitly carries assumptions about:
 
 Traditional cryptography often optimizes for mathematical elegance and provable hardness under well-defined assumptions.
 
-Xcrypt does not reject that foundation.
+Xaor does not reject that foundation.
 
-Instead, Xcrypt extends it by asking whether architectural adaptability can increase adversarial cost.
+Instead, Xaor extends it by asking whether architectural adaptability can increase adversarial cost.
 
 ---
 
@@ -67,7 +67,7 @@ This asymmetry is desirable.
 
 # Philosophy 2 — Static Systems Favor Optimization
 
-One of the most important assumptions in Xcrypt:
+One of the most important assumptions in Xaor:
 
 > Repeated observation reduces uncertainty.
 
@@ -114,7 +114,7 @@ Millions/Billions of Guesses
 
 Static computation makes optimization easier.
 
-Xcrypt attempts to reduce this advantage.
+Xaor attempts to reduce this advantage.
 
 ---
 
@@ -163,7 +163,7 @@ Complexity increases:
 * implementation mistakes
 * maintenance difficulty
 
-Therefore Xcrypt follows:
+Therefore Xaor follows:
 
 ```text
 Necessary Complexity Only
@@ -203,7 +203,7 @@ Massive difference.
 
 ## Entropy Misconceptions
 
-Xcrypt rejects several misconceptions.
+Xaor rejects several misconceptions.
 
 ### Misconception 1
 
@@ -267,7 +267,7 @@ Fixed Round 2
 Fixed Round 3
 ```
 
-Xcrypt proposes:
+Xaor proposes:
 
 ```text
 Round 1 Output
@@ -303,13 +303,13 @@ Memory-heavy workloads degrade these advantages.
 
 Thus memory becomes a defensive resource.
 
-Xcrypt treats memory hardness as first-class.
+Xaor treats memory hardness as first-class.
 
 ---
 
 # Philosophy 9 — Perfect Security Does Not Exist
 
-Xcrypt explicitly rejects absolute security claims.
+Xaor explicitly rejects absolute security claims.
 
 There is no system that guarantees:
 
@@ -319,7 +319,7 @@ There is no system that guarantees:
 
 Security is probabilistic and adversarial.
 
-Therefore Xcrypt aims for:
+Therefore Xaor aims for:
 
 * higher attacker cost
 * reduced predictability
@@ -331,7 +331,7 @@ Not perfection.
 
 # Summary
 
-Xcrypt philosophy rests on nine principles:
+Xaor philosophy rests on nine principles:
 
 1. Security is economic warfare
 2. Static systems favor attackers

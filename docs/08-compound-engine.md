@@ -4,11 +4,11 @@
 
 # Introduction
 
-The Compound Engine is the primary computational hardening mechanism of Xcrypt.
+The Compound Engine is the primary computational hardening mechanism of Xaor.
 
 Its purpose is to repeatedly transform internal state in a recursive manner such that computational difficulty compounds over successive rounds.
 
-This engine formalizes one of the central Xcrypt ideas:
+This engine formalizes one of the central Xaor ideas:
 
 > Security hardness can grow nonlinearly when outputs recursively influence future transformations.
 
@@ -33,7 +33,7 @@ Each round transforms state.
 
 However, these rounds may still be structurally predictable.
 
-Xcrypt introduces compounding:
+Xaor introduces compounding:
 
 ```text id="6yz2ru"
 Output1 → influences Output2
@@ -80,7 +80,7 @@ This means current state depends on:
 
 # Compounding Layers
 
-Xcrypt compounds hardness through four layers.
+Xaor compounds hardness through four layers.
 
 ---
 

@@ -24,7 +24,7 @@ Two distinct inputs producing same output.
 
 ## Compound Engine
 
-Xcrypt engine responsible for recursive hardening across rounds.
+Xaor engine responsible for recursive hardening across rounds.
 
 ---
 
@@ -114,7 +114,7 @@ Deterministic master state generated from input and entropy.
 
 ## State
 
-Internal mutable data processed by Xcrypt engines.
+Internal mutable data processed by Xaor engines.
 
 ---
 

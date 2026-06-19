@@ -2,7 +2,7 @@
 
 ---
 
-## Why Xcrypt Exists
+## Why Xaor Exists
 
 Modern cryptography is powerful.
 
@@ -33,9 +33,9 @@ This motivates a fundamental question:
 
 ---
 
-## Origin of Xcrypt
+## Origin of Xaor
 
-Xcrypt emerged from interdisciplinary exploration involving:
+Xaor emerged from interdisciplinary exploration involving:
 
 * cryptography
 * information theory
@@ -62,7 +62,7 @@ Attackers benefit from:
 * hardware acceleration
 * predictable computation paths
 
-Xcrypt attempts to counter this by introducing adaptive internal structures.
+Xaor attempts to counter this by introducing adaptive internal structures.
 
 ---
 
@@ -121,7 +121,7 @@ Potential entropy sources include:
 
 ## Experimental Nature
 
-Xcrypt is a research project.
+Xaor is a research project.
 
 Security claims remain hypothetical until validated through:
 
@@ -130,4 +130,4 @@ Security claims remain hypothetical until validated through:
 * cryptanalysis
 * adversarial review
 
-This documentation serves as the foundational blueprint for turning Xcrypt from theory into reality.
+This documentation serves as the foundational blueprint for turning Xaor from theory into reality.

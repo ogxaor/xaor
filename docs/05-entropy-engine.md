@@ -4,7 +4,7 @@
 
 # Introduction
 
-The Entropy Engine is the first operational stage of Xcrypt.
+The Entropy Engine is the first operational stage of Xaor.
 
 Its responsibility is to collect, normalize, evaluate, and mix entropy from multiple sources into a single structured entropy vector.
 
@@ -23,7 +23,7 @@ Without strong entropy, the entire engine weakens.
 
 Entropy refers to unpredictability.
 
-In Xcrypt, entropy is not treated as a single number.
+In Xaor, entropy is not treated as a single number.
 
 Instead, entropy is modeled as a multi-domain vector.
 
@@ -105,7 +105,7 @@ Entropy sources should not expose secret information.
 
 # Entropy Source Categories
 
-Xcrypt classifies entropy into four categories.
+Xaor classifies entropy into four categories.
 
 ---
 

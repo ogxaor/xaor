@@ -4,7 +4,7 @@
 
 # Introduction
 
-The Cycle Recycler is one of the most distinctive components of Xcrypt.
+The Cycle Recycler is one of the most distinctive components of Xaor.
 
 Its purpose is to recycle intermediate computational states back into future computation stages.
 
@@ -12,7 +12,7 @@ This allows internal computation to evolve recursively.
 
 Traditional cryptographic systems rarely allow round outputs to mutate future structure.
 
-Xcrypt intentionally enables this behavior.
+Xaor intentionally enables this behavior.
 
 ---
 

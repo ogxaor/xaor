@@ -4,7 +4,7 @@
 
 # Overview
 
-This chapter defines the end-to-end algorithms used by Xcrypt.
+This chapter defines the end-to-end algorithms used by Xaor.
 
 Three core algorithms exist:
 
@@ -233,4 +233,4 @@ Where:
 
 # Summary
 
-Xcrypt algorithms combine all prior engines into deterministic end-to-end pipelines.
+Xaor algorithms combine all prior engines into deterministic end-to-end pipelines.

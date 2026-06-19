@@ -4,7 +4,7 @@
 
 # Why Rust
 
-Xcrypt core runtime should be implemented in Rust.
+Xaor core runtime should be implemented in Rust.
 
 Reasons:
 
@@ -60,7 +60,7 @@ Useful crates include:
 # Repository Structure
 
 ```text id="q7n8vr"
-xcrypt/
+xaor/
 │
 ├── Cargo.toml
 ├── src/
@@ -179,7 +179,7 @@ Central orchestrator.
 Example:
 
 ```rust
-pub struct XcryptEngine {
+pub struct XaorEngine {
     entropy: EntropyEngine,
     seed: SeedEngine,
     topology: TopologyEngine,
@@ -238,4 +238,4 @@ Rust provides the best balance of:
 * safety
 * maintainability
 
-for Xcrypt implementation.
+for Xaor implementation.

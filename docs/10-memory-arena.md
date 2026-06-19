@@ -4,7 +4,7 @@
 
 # Introduction
 
-The Memory Arena provides Xcrypt with memory-hard resistance.
+The Memory Arena provides Xaor with memory-hard resistance.
 
 Its goal is to increase the cost of hardware acceleration by forcing expensive memory operations.
 
@@ -14,7 +14,7 @@ Arithmetic alone is cheap.
 
 Memory bandwidth is expensive.
 
-Xcrypt exploits this asymmetry.
+Xaor exploits this asymmetry.
 
 ---
 
@@ -96,7 +96,7 @@ Each cell receives pseudorandom content.
 
 # Windowing Concept
 
-Xcrypt introduces memory windows.
+Xaor introduces memory windows.
 
 Instead of accessing full arena uniformly, computation focuses on rotating windows.
 
@@ -140,7 +140,7 @@ This increases irregularity.
 
 # Memory Operations
 
-Xcrypt uses several operations.
+Xaor uses several operations.
 
 ---
 

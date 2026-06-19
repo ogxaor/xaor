@@ -4,7 +4,7 @@
 
 # Introduction
 
-The Finalizer is the terminal stage of Xcrypt.
+The Finalizer is the terminal stage of Xaor.
 
 Its responsibility is to convert the fully transformed internal state into a usable output artifact.
 
@@ -55,7 +55,7 @@ The Finalizer compresses state into canonical output.
 
 # Operating Modes
 
-Xcrypt supports two major modes.
+Xaor supports two major modes.
 
 ---
 

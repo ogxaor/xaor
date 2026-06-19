@@ -4,7 +4,7 @@
 
 # Introduction
 
-Xcrypt relies on several mathematical domains:
+Xaor relies on several mathematical domains:
 
 * information theory
 * probability
@@ -114,13 +114,13 @@ O(n \log n)
 
 Sub-quadratic.
 
-Xcrypt intentionally introduces expensive operations to increase cracking cost.
+Xaor intentionally introduces expensive operations to increase cracking cost.
 
 ---
 
 # State Representation
 
-Xcrypt operates on internal state vectors.
+Xaor operates on internal state vectors.
 
 Example:
 
@@ -156,7 +156,7 @@ S_{n+1}=T_n(S_n)
 
 # Compound Transformations
 
-Core Xcrypt concept.
+Core Xaor concept.
 
 Recursive definition:
 
@@ -204,7 +204,7 @@ Benefits:
 
 # Graph Theory
 
-Xcrypt uses computational graphs.
+Xaor uses computational graphs.
 
 Graph:
 
@@ -277,7 +277,7 @@ Strong systems make collisions infeasible.
 
 # Summary
 
-Mathematical pillars of Xcrypt:
+Mathematical pillars of Xaor:
 
 * entropy theory
 * probability

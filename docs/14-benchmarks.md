@@ -4,11 +4,11 @@
 
 # Purpose
 
-Benchmarks measure the practical performance characteristics of Xcrypt.
+Benchmarks measure the practical performance characteristics of Xaor.
 
 They answer critical engineering questions:
 
-* How fast is Xcrypt?
+* How fast is Xaor?
 * How much memory does it consume?
 * How expensive is verification?
 * How well does it resist GPU parallelization?
@@ -20,7 +20,7 @@ Benchmarking is essential because security alone is insufficient if performance 
 
 # Benchmark Dimensions
 
-Xcrypt must be measured across multiple axes.
+Xaor must be measured across multiple axes.
 
 ---
 
@@ -107,7 +107,7 @@ Important for topology-heavy systems.
 
 # 5. Cache Behavior
 
-Xcrypt intentionally stresses memory.
+Xaor intentionally stresses memory.
 
 Metrics:
 
@@ -265,7 +265,7 @@ PBKDF2
 
 # Success Criteria
 
-Xcrypt is considered promising if:
+Xaor is considered promising if:
 
 ---
 
@@ -291,7 +291,7 @@ bcrypt GPU speedup:
 100×+
 ```
 
-Desirable Xcrypt target:
+Desirable Xaor target:
 
 ```text id="bm10"
 <10×

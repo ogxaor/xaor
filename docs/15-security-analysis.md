@@ -6,7 +6,7 @@
 
 This chapter is intentionally conservative.
 
-Xcrypt has NOT undergone:
+Xaor has NOT undergone:
 
 * peer review
 * academic cryptanalysis
@@ -19,7 +19,7 @@ Therefore security claims remain theoretical.
 
 # Security Goals
 
-Xcrypt attempts to improve resistance against:
+Xaor attempts to improve resistance against:
 
 * brute force
 * GPU cracking
@@ -34,7 +34,7 @@ Xcrypt attempts to improve resistance against:
 
 # 1. High Structural Diversity
 
-Unlike fixed pipelines, Xcrypt generates adaptive computation graphs.
+Unlike fixed pipelines, Xaor generates adaptive computation graphs.
 
 Potential benefit:
 
@@ -96,7 +96,7 @@ Even mathematically elegant systems break.
 
 # Weakness 2 — Complexity Explosion
 
-Xcrypt has many components:
+Xaor has many components:
 
 * entropy engine
 * seed engine
@@ -209,7 +209,7 @@ If possible, compound hardness weakens.
 
 # Formal Validation Needed
 
-Before production, Xcrypt requires:
+Before production, Xaor requires:
 
 ---
 
@@ -261,7 +261,7 @@ Research Prototype Only
 
 # Final Assessment
 
-Can Xcrypt replace bcrypt or Argon2 today?
+Can Xaor replace bcrypt or Argon2 today?
 
 Answer:
 
@@ -269,7 +269,7 @@ Answer:
 No
 ```
 
-Could Xcrypt evolve into a novel adaptive cryptographic framework?
+Could Xaor evolve into a novel adaptive cryptographic framework?
 
 Answer:
 

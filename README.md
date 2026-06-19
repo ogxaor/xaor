@@ -133,16 +133,16 @@ You can choose a preset with `--profile` or environment variables:
 Example environment variables:
 
 ```bash
-XCRYPT_PROFILE=server
-XCRYPT_ROUNDS=16
-XCRYPT_MEMORY=256
-XCRYPT_NODES=32
-XCRYPT_OUTPUT_SIZE=64
-XCRYPT_MODE=hash
+XAOR_PROFILE=server
+XAOR_ROUNDS=16
+XAOR_MEMORY=256
+XAOR_NODES=32
+XAOR_OUTPUT_SIZE=64
+XAOR_MODE=hash
 ```
 
 ### Notes
 
-* `--profile` overrides `XCRYPT_PROFILE`
+* `--profile` overrides `XAOR_PROFILE`
 * `hash` and `verify` return errors with readable error codes when input is invalid
 * `bench` uses the same configured pipeline as the library API
