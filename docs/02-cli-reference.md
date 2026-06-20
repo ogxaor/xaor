@@ -2,6 +2,45 @@
 
 ---
 
+## Installation & Environment Setup
+
+The Xaor CLI is compiled directly from the Rust codebase. You can build it from source and install it globally.
+
+### 1. Build and Install via Cargo
+From the root of the `xaor` repository, compile and install the executable globally using cargo:
+```bash
+# Installs 'xaor' binary into ~/.cargo/bin
+cargo install --path . --bin xaor
+```
+
+### 2. Configure System PATH Environment Variables
+Ensure the cargo binary path is in your system's `PATH` variable so you can run the `xaor` command globally:
+
+#### Windows (PowerShell)
+To permanently add Cargo's binary path to your User environment variables:
+```powershell
+[System.Environment]::SetEnvironmentVariable(
+    "Path",
+    [System.Environment]::GetEnvironmentVariable("Path", "User") + ";$Home\.cargo\bin",
+    "User"
+)
+# Restart your shell terminal for changes to apply
+```
+
+#### Linux & macOS (Bash/Zsh)
+Usually, Cargo automatically adds `~/.cargo/bin` to your path. If it's missing, add this to your `~/.bashrc`, `~/.zshrc`, or `~/.profile`:
+```bash
+export PATH="$HOME/.cargo/bin:$PATH"
+```
+
+### 3. Verify Installation
+Verify that the `xaor` binary has been successfully added to your system environment path:
+```bash
+xaor --version
+```
+
+---
+
 ## Commands Catalog
 
 The Xaor command line interface (CLI) is a developer utility for hashing, checking config values, and testing system bottlenecks:
