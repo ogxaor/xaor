@@ -9,7 +9,7 @@ Xaor is designed to be highly portable and runs as a native package across multi
 | Language | Registry | Installation Command |
 | :--- | :--- | :--- |
 | **Rust** | Crates.io | `cargo add xaor` |
-| **Node.js** | NPM | `npm install @xaor/xaor` |
+| **Node.js** | NPM | `npm install xaorjs` |
 | **Python** | PyPI | `pip install xaor` |
 | **Dart** | Pub.dev | `dart pub add xaor` |
 | **Flutter** | Pub.dev | `flutter pub add xaor` |

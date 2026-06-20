@@ -370,7 +370,7 @@ func main() {
 
 ## 6. Multi-Platform Package Distribution Roadmap
 
-To make Xaor available as native packages on different language registries (so developers can run `npm install xaor` or `pip install xaor` without compiling Rust from source), use these modern workflows:
+To make Xaor available as native packages on different language registries (so developers can run `npm install xaorjs` or `pip install xaor` without compiling Rust from source), use these modern workflows:
 
 ### 📦 Node.js (NPM Registry)
 
@@ -379,7 +379,7 @@ Use [napi-rs](https://napi.rs/) to compile Rust directly to a Node.js binary mod
 1. **Setup:** Install the CLI: `npm install -g @napi-rs/cli`.
 2. **Initialize:** Run `napi-rs init` to configure your Rust project for N-API.
 3. **Github Actions Workflow:** `napi-rs` provides a pre-built GitHub Actions template that automatically cross-compiles your Rust engine on push for Windows, macOS, and Linux (both x64 and ARM architectures).
-4. **Publish:** It generates platform-specific package variants (e.g., `@xaor/core-win32-x64`) and a main package (`xaor`) that dynamically loads the correct binary for the user's OS.
+4. **Publish:** It generates platform-specific package variants (e.g., `@xaor/core-win32-x64`) and a main package (`xaorjs`) that dynamically loads the correct binary for the user's OS.
 
 #### Option B: WebAssembly (Recommended for Web Browsers & Edge Runtimes)
 Use [wasm-pack](https://rustwasm.github.io/wasm-pack/) to compile the Rust logic into WebAssembly (`.wasm`) + a Javascript glue layer.

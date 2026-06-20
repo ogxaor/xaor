@@ -44,7 +44,7 @@ Xaor is available as a native package across multiple language registries:
 | Language | Registry | Installation Command |
 | :--- | :--- | :--- |
 | **Rust** | Crates.io | `cargo add xaor` |
-| **Node.js** | NPM | `npm install @xaor/xaor` |
+| **Node.js** | NPM | `npm install xaorjs` |
 | **Python** | PyPI | `pip install xaor` |
 | **Dart** | Pub.dev | `dart pub add xaor` |
 | **Flutter** | Pub.dev | `flutter pub add xaor` |
