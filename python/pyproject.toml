@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xaor"
+version = "0.2.0"
+description = "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant"
+readme = "README.md"
+authors = [
+    { name = "Surya" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.7"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["xaor*"]
+
+[tool.setuptools.package-data]
+xaor = ["*.dll", "*.so", "*.dylib"]

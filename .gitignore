@@ -8,4 +8,17 @@ Cargo.lock
 xaor.dll
 libxaor.so
 libxaor.dylib
-node_modules/
+node_modules/
+
+# Python compiled binaries
+python/xaor/xaor.dll
+python/xaor/libxaor.so
+python/xaor/libxaor.dylib
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
