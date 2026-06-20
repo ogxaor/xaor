@@ -20,5 +20,10 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+# Dart/Flutter cache
+.dart_tool/
 
+# Python build artifacts
+python/dist/
+python/*.egg-info/
 
