@@ -153,3 +153,137 @@ A Xaor hash string contains all the parameters necessary to replicate the hashin
    │    └─────────────────────────────────── Xaor Protocol Version
    └──────────────────────────────────────── Algorithm Identifier (XAOR)
 ```
+
+---
+
+## 5. Multi-Language & Platform Support (Node.js, Python, C++) via C FFI
+
+Xaor compiles as both a Rust library and a C-compatible dynamic shared library (`.dll` on Windows, `.so` on Linux, `.dylib` on macOS). Developers on other runtimes can bind directly to the core cryptographic engine.
+
+### 🔌 Exported C API Functions (`src/ffi.rs`)
+
+* `xaor_hash(password: *const c_char) -> *mut c_char`
+  Hashes a UTF-8 password string. Returns a pointer to a newly allocated null-terminated string containing the PHC-formatted hash. Returns `null` on error.
+* `xaor_verify(password: *const c_char, stored: *const c_char) -> i32`
+  Verifies a password against a stored hash string. Returns `1` if valid, `0` if invalid, and `-1` on configuration/parsing error.
+* `xaor_last_error() -> *mut c_char`
+  Retrieves a pointer to the last error message string if a function returned an error. Returns `null` if no error.
+* `xaor_free_string(ptr: *mut c_char)`
+  **Mandatory:** Frees memory allocated by Rust for a string returned by `xaor_hash` or `xaor_last_error`.
+
+---
+
+### 🟢 Node.js Integration (using `ffi-napi`)
+
+Install the FFI wrapper:
+```bash
+npm install ffi-napi
+```
+
+Implement the Javascript wrapper:
+```javascript
+const ffi = require('ffi-napi');
+const path = require('path');
+
+// Resolve path to the compiled shared library (e.g. xaor.dll, libxaor.so, or libxaor.dylib)
+const libPath = path.resolve(__dirname, './target/release/xaor');
+
+const lib = ffi.Library(libPath, {
+    'xaor_hash': ['pointer', ['string']],
+    'xaor_verify': ['int32', ['string', 'string']],
+    'xaor_free_string': ['void', ['pointer']],
+    'xaor_last_error': ['pointer', []]
+});
+
+function hashPassword(password) {
+    const ptr = lib.xaor_hash(password);
+    if (ptr.isNull()) {
+        const errPtr = lib.xaor_last_error();
+        const err = errPtr.readCString();
+        lib.xaor_free_string(errPtr);
+        throw new Error("Hashing failed: " + err);
+    }
+    const hash = ptr.readCString();
+    lib.xaor_free_string(ptr);
+    return hash;
+}
+
+function verifyPassword(password, hash) {
+    const res = lib.xaor_verify(password, hash);
+    if (res === -1) {
+        const errPtr = lib.xaor_last_error();
+        const err = errPtr.readCString();
+        lib.xaor_free_string(errPtr);
+        throw new Error("Verification failed: " + err);
+    }
+    return res === 1;
+}
+
+// Quick Test
+const hash = hashPassword("developer-pass");
+console.log("Generated hash:", hash);
+console.log("Is valid:", verifyPassword("developer-pass", hash)); // true
+```
+
+---
+
+### 🐍 Python Integration (using `ctypes`)
+
+No external package dependencies needed.
+
+```python
+import ctypes
+import os
+import sys
+
+# Resolve shared library platform extension
+if sys.platform == "win32":
+    lib_name = "xaor.dll"
+elif sys.platform == "darwin":
+    lib_name = "libxaor.dylib"
+else:
+    lib_name = "libxaor.so"
+
+lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "./target/release", lib_name))
+lib = ctypes.CDLL(lib_path)
+
+# Configure parameter and return types
+lib.xaor_hash.argtypes = [ctypes.c_char_p]
+lib.xaor_hash.restype = ctypes.c_void_p  # Raw pointer returned to handle deallocation
+
+lib.xaor_verify.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+lib.xaor_verify.restype = ctypes.c_int32
+
+lib.xaor_free_string.argtypes = [ctypes.c_void_p]
+lib.xaor_free_string.restype = None
+
+lib.xaor_last_error.argtypes = []
+lib.xaor_last_error.restype = ctypes.c_void_p
+
+def hash_password(password: str) -> str:
+    ptr = lib.xaor_hash(password.encode('utf-8'))
+    if not ptr:
+        err_ptr = lib.xaor_last_error()
+        err = ctypes.cast(err_ptr, ctypes.c_char_p).value.decode('utf-8')
+        lib.xaor_free_string(err_ptr)
+        raise Exception(f"Hashing failed: {err}")
+    
+    hash_str = ctypes.cast(ptr, ctypes.c_char_p).value.decode('utf-8')
+    lib.xaor_free_string(ptr)
+    return hash_str
+
+def verify_password(password: str, hash_str: str) -> bool:
+    res = lib.xaor_verify(password.encode('utf-8'), hash_str.encode('utf-8'))
+    if res == -1:
+        err_ptr = lib.xaor_last_error()
+        err = ctypes.cast(err_ptr, ctypes.c_char_p).value.decode('utf-8')
+        lib.xaor_free_string(err_ptr)
+        raise Exception(f"Verification failed: {err}")
+    return res == 1
+
+# Quick Test
+hash_val = hash_password("developer-pass")
+print("Generated hash:", hash_val)
+print("Is valid:", verify_password("developer-pass", hash_val)) # True
+```
+

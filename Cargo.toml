@@ -9,6 +9,10 @@ repository = "https://github.com/ogxaor/xaor"
 keywords = ["cryptography", "password-hashing", "memory-hard", "security", "hashing"]
 categories = ["cryptography", "authentication"]
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+
 [dependencies]
 rand = "0.8"
 blake3 = { version = "1.5", features = ["rayon"] }
