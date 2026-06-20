@@ -24,7 +24,7 @@ import (
 	"github.com/ogxaor/xaor/go"
 )
 
-fn main() {
+func main() {
 	password := "my-secure-go-password"
 
 	// 1. Hash password

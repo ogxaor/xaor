@@ -4,12 +4,19 @@ Dart FFI bindings for the **Xaor Cryptographic Engine** — an adaptive, memory-
 
 ## Installation
 
-Add this to your `pubspec.yaml`:
+Run this command in your terminal:
+
+```bash
+dart pub add xaor
+# or for Flutter:
+flutter pub add xaor
+```
+
+Or add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  xaor:
-    path: ../path/to/xaor/dart # Or git dependency once uploaded
+  xaor: ^0.2.0
 ```
 
 ## Setup
