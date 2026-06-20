@@ -10,13 +10,24 @@ use crate::traits::stage::EngineStage;
 
 use super::context::PipelineContext;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SeedStage
+// ─────────────────────────────────────────────────────────────────────────────
+
 pub struct SeedStage {
     entropy: EntropyVector,
+    /// Optional server-side pepper. If Some, it is mixed into the seed hash
+    /// after the salt with a domain separator. Not stored in the hash string.
+    pepper: Option<Vec<u8>>,
 }
 
 impl SeedStage {
     pub fn new(entropy: EntropyVector) -> Self {
-        Self { entropy }
+        Self { entropy, pepper: None }
+    }
+
+    pub fn with_pepper(entropy: EntropyVector, pepper: Vec<u8>) -> Self {
+        Self { entropy, pepper: Some(pepper) }
     }
 }
 
@@ -28,12 +39,16 @@ impl EngineStage for SeedStage {
     fn execute(&self, input: Vec<u8>, _ctx: &mut PipelineContext) -> Vec<u8> {
         let seed_engine = SeedEngine::new();
         seed_engine
-            .generate(&input, &self.entropy)
+            .generate(&input, &self.entropy, self.pepper.as_deref())
             .expect("seed generation is infallible")
             .root
             .to_vec()
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TopologyStage
+// ─────────────────────────────────────────────────────────────────────────────
 
 pub struct TopologyStage {
     node_count: usize,
@@ -53,10 +68,13 @@ impl EngineStage for TopologyStage {
     fn execute(&self, input: Vec<u8>, ctx: &mut PipelineContext) -> Vec<u8> {
         let graph = TopologyEngine::generate(&input, self.node_count);
         ctx.graph = Some(graph);
-
         input
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CompoundStage
+// ─────────────────────────────────────────────────────────────────────────────
 
 pub struct CompoundStage {
     rounds: usize,
@@ -83,6 +101,10 @@ impl EngineStage for CompoundStage {
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ChaosStage
+// ─────────────────────────────────────────────────────────────────────────────
+
 pub struct ChaosStage {
     engine: ChaosEngine,
 }
@@ -105,6 +127,16 @@ impl EngineStage for ChaosStage {
     }
 }
 
+impl Default for ChaosStage {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RecyclerStage
+// ─────────────────────────────────────────────────────────────────────────────
+
 pub struct RecyclerStage {
     cycles: usize,
 }
@@ -124,6 +156,10 @@ impl EngineStage for RecyclerStage {
         RecyclerEngine::recycle(&input, self.cycles)
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MemoryStage
+// ─────────────────────────────────────────────────────────────────────────────
 
 pub struct MemoryStage {
     memory_mb: usize,
@@ -145,11 +181,18 @@ impl EngineStage for MemoryStage {
     }
 }
 
-pub struct FinalizerStage;
+// ─────────────────────────────────────────────────────────────────────────────
+// FinalizerStage
+// ─────────────────────────────────────────────────────────────────────────────
+
+pub struct FinalizerStage {
+    /// Output byte length — 64 for Standard, 128 for Quantum.
+    output_size: usize,
+}
 
 impl FinalizerStage {
-    pub fn new() -> Self {
-        Self
+    pub fn new(output_size: usize) -> Self {
+        Self { output_size }
     }
 }
 
@@ -159,6 +202,6 @@ impl EngineStage for FinalizerStage {
     }
 
     fn execute(&self, input: Vec<u8>, _ctx: &mut PipelineContext) -> Vec<u8> {
-        FinalizerEngine::finalize(&input)
+        FinalizerEngine::finalize(&input, self.output_size)
     }
 }

@@ -21,7 +21,7 @@ fn main() {
     pipeline.add_stage(Box::new(DummyStage));
 
     let input = vec![1, 2, 3];
-    let output = pipeline.run(input);
+    let output = pipeline.run(input, 1);
 
     println!("{:?}", output);
 }

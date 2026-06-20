@@ -1,3 +1,5 @@
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
+
 use std::cell::RefCell;
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
@@ -26,11 +28,14 @@ fn c_str_from_ptr<'a>(ptr: *const c_char) -> Result<&'a CStr, String> {
         return Err("null pointer provided".into());
     }
 
-    unsafe { CStr::from_ptr(ptr) }
-        .to_str()
+    // SAFETY: `ptr` is non-null (checked above). The caller (a C/Dart/Node FFI
+    // caller) is required by this function's contract to pass a valid,
+    // NUL-terminated C string whose lifetime outlasts this call. We immediately
+    // validate UTF-8 before returning the reference, so no unsafe data escapes.
+    let cstr = unsafe { CStr::from_ptr(ptr) };
+    cstr.to_str()
         .map_err(|_| "input was not valid UTF-8".to_string())?;
-
-    Ok(unsafe { CStr::from_ptr(ptr) })
+    Ok(cstr)
 }
 
 #[no_mangle]
@@ -46,6 +51,10 @@ pub extern "C" fn xaor_last_error() -> *mut c_char {
 #[no_mangle]
 pub extern "C" fn xaor_free_string(_ptr: *mut c_char) {
     if !_ptr.is_null() {
+        // SAFETY: `_ptr` is non-null (checked above). Every `*mut c_char`
+        // vended by this library was originally produced by `CString::into_raw()`
+        // in the same module. Reconstructing it here returns ownership to Rust
+        // so it is properly dropped. The caller must not free the pointer again.
         unsafe {
             let _ = CString::from_raw(_ptr);
         }
@@ -55,6 +64,13 @@ pub extern "C" fn xaor_free_string(_ptr: *mut c_char) {
 #[no_mangle]
 pub extern "C" fn xaor_free_bytes(ptr: *mut u8, len: usize) {
     if !ptr.is_null() {
+        // SAFETY: `ptr` is non-null (checked above). Every `*mut u8` vended by
+        // this library was allocated as a `Box<[u8]>` (via `into_boxed_slice()`
+        // + `as_mut_ptr()` + `mem::forget`), so the allocation was made by the
+        // global Rust allocator. `len` equals the original slice length, which
+        // is written into the caller's `out_len` at the time of allocation —
+        // the caller must pass back exactly that value. capacity == len for
+        // boxed slices.
         unsafe {
             let _ = Vec::from_raw_parts(ptr, len, len);
         }
@@ -306,9 +322,15 @@ pub extern "C" fn xaor_xcipher_encrypt(
         return ptr::null_mut();
     }
 
+    // SAFETY: All three pointers are non-null (checked above). The caller
+    // guarantees that each pointer points to a valid byte buffer of exactly
+    // `*_len` bytes that remains live for the duration of this call. This is
+    // the standard FFI slice-borrowing contract documented in the C header.
     let plaintext_slice = unsafe { std::slice::from_raw_parts(plaintext, plaintext_len) };
-    let key_slice = unsafe { std::slice::from_raw_parts(key, key_len) };
-    let nonce_slice = unsafe { std::slice::from_raw_parts(nonce, nonce_len) };
+    let key_slice       = unsafe { std::slice::from_raw_parts(key, key_len) };
+    let nonce_slice     = unsafe { std::slice::from_raw_parts(nonce, nonce_len) };
+    // SAFETY: `ad` may be null (empty associated data is valid). When non-null,
+    // the caller guarantees `ad` points to a valid buffer of `ad_len` bytes.
     let ad_slice = if ad.is_null() {
         &[]
     } else {
@@ -322,6 +344,10 @@ pub extern "C" fn xaor_xcipher_encrypt(
             let len = encrypted_vec.len();
             let res_ptr = encrypted_vec.as_mut_ptr();
             std::mem::forget(encrypted_vec);
+            // SAFETY: `out_len` is non-null (checked at the top of this
+            // function). It is a plain `*mut usize` output parameter that the
+            // caller allocated and passed in. Writing to it is the expected
+            // FFI contract for returning the buffer length.
             unsafe {
                 *out_len = len;
             }
@@ -352,9 +378,14 @@ pub extern "C" fn xaor_xcipher_decrypt(
         return ptr::null_mut();
     }
 
+    // SAFETY: All three pointers are non-null (checked above). The caller
+    // guarantees that each pointer points to a valid byte buffer of exactly
+    // `*_len` bytes that remains live for the duration of this call.
     let ciphertext_slice = unsafe { std::slice::from_raw_parts(ciphertext, ciphertext_len) };
-    let key_slice = unsafe { std::slice::from_raw_parts(key, key_len) };
-    let nonce_slice = unsafe { std::slice::from_raw_parts(nonce, nonce_len) };
+    let key_slice        = unsafe { std::slice::from_raw_parts(key, key_len) };
+    let nonce_slice      = unsafe { std::slice::from_raw_parts(nonce, nonce_len) };
+    // SAFETY: `ad` may be null (empty associated data is valid). When non-null,
+    // the caller guarantees `ad` points to a valid buffer of `ad_len` bytes.
     let ad_slice = if ad.is_null() {
         &[]
     } else {
@@ -368,6 +399,8 @@ pub extern "C" fn xaor_xcipher_decrypt(
             let len = decrypted_vec.len();
             let res_ptr = decrypted_vec.as_mut_ptr();
             std::mem::forget(decrypted_vec);
+            // SAFETY: `out_len` is non-null (checked at the top of this
+            // function). Writing the buffer length is the required FFI contract.
             unsafe {
                 *out_len = len;
             }
@@ -423,8 +456,11 @@ pub extern "C" fn xaor_xvault_store(
         return -1;
     }
 
+    // SAFETY: Both `secret` and `master_key` are non-null (checked above).
+    // The caller guarantees each pointer refers to a valid buffer of the
+    // corresponding length for the duration of this call (standard FFI contract).
     let secret_slice = unsafe { std::slice::from_raw_parts(secret, secret_len) };
-    let key_slice = unsafe { std::slice::from_raw_parts(master_key, master_key_len) };
+    let key_slice    = unsafe { std::slice::from_raw_parts(master_key, master_key_len) };
 
     let engine = crate::VaultEngine::new(path_str);
     match engine.store(name_str, secret_slice, key_slice) {
@@ -483,6 +519,8 @@ pub extern "C" fn xaor_xvault_retrieve(
         return ptr::null_mut();
     }
 
+    // SAFETY: `master_key` is non-null (checked above). The caller guarantees
+    // it points to a valid buffer of `master_key_len` bytes for this call.
     let key_slice = unsafe { std::slice::from_raw_parts(master_key, master_key_len) };
 
     let engine = crate::VaultEngine::new(path_str);
@@ -492,12 +530,16 @@ pub extern "C" fn xaor_xvault_retrieve(
             let len = secret_vec.len();
             let res_ptr = secret_vec.as_mut_ptr();
             std::mem::forget(secret_vec);
+            // SAFETY: `out_len` is non-null (checked at the top of this
+            // function). Writing the buffer length is the required FFI contract.
             unsafe {
                 *out_len = len;
             }
             res_ptr
         }
         Ok(None) => {
+            // SAFETY: `out_len` is non-null (checked above). Setting it to 0
+            // signals to the caller that no secret was found (not an error).
             unsafe {
                 *out_len = 0;
             }

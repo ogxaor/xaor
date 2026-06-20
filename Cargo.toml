@@ -1,20 +1,24 @@
 [package]
 name = "xaor"
-version = "0.1.0-alpha"
+version = "0.2.0"
 edition = "2021"
 authors = ["Surya"]
-description = "Adaptive regenerative cryptographic engine"
+description = "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant"
 license = "MIT"
-repository = "https://github.com/suryasubhrajit/xcrypt"
+repository = "https://github.com/ogxaor/xaor"
+keywords = ["cryptography", "password-hashing", "memory-hard", "security", "hashing"]
+categories = ["cryptography", "authentication"]
 
 [dependencies]
 rand = "0.8"
-blake3 = "1.5"
+blake3 = { version = "1.5", features = ["rayon"] }
 sha3 = "0.10"
-zeroize = "1.8"
+zeroize = { version = "1.8", features = ["derive"] }
+subtle = "2.6"
 thiserror = "2.0"
 base64 = "0.22"
 hex = "0.4"
+rayon = "1.8"
 
 [dev-dependencies]
 criterion = "0.5"
@@ -23,3 +27,4 @@ criterion = "0.5"
 lto = true
 codegen-units = 1
 panic = "abort"
+opt-level = 3

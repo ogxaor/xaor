@@ -14,17 +14,27 @@ pub mod ffi;
 pub use xentropy as entropy;
 pub use xchaos as chaos;
 
-// Re-export core modules to keep all crate::<module>::... imports functioning
+// Re-export core modules
 pub use crate::core::{
     config, error, seed, topology, compound, recycler, memory, finalizer, engine, traits,
     pipeline, serialization,
 };
 
-// Re-export public APIs
-pub use core::config::{XaorConfig, XaorMode};
+// ── Public API surface ────────────────────────────────────────────────────────
+
+/// Primary hashing interface, one-liners, and constant-time utilities.
+pub use xhash::{constant_time_eq, error_catalog, Xaor, XaorBuilder};
+
+/// Configuration types.
+pub use core::config::{XaorConfig, XaorConfigBuilder, XaorMode, XaorOutputMode};
+
+/// Error type.
 pub use core::error::XaorError;
+
+/// Stored hash parser.
 pub use core::serialization::StoredHash;
-pub use xhash::{constant_time_eq, error_catalog, Xaor};
+
+/// Experimental subsystems.
 pub use xid::{XidConfig, XidEngine};
 pub use xnonce::NonceEngine;
 pub use xproof::{ProofConfig, ProofEngine};

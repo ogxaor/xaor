@@ -1,6 +1,6 @@
 use crate::pipeline::context::PipelineContext;
 
-pub trait EngineStage {
+pub trait EngineStage: Send + Sync {
     fn name(&self) -> &'static str;
 
     fn execute(
