@@ -1,3 +1,15 @@
+<div align="center">
+<pre>
+ ██╗  ██╗  █████╗   ██████╗  ██████╗ 
+ ╚██╗██╔╝ ██╔══██╗ ██╔═══██╗ ██╔══██╗
+  ╚███╔╝  ███████║ ██║   ██║ ██████╔╝
+  ██╔██╗  ██╔══██║ ██║   ██║ ██╔══██╗
+ ██╔╝ ██╗ ██║  ██║ ╚██████╔╝ ██║  ██║
+ ╚═╝  ╚═╝ ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝
+</pre>
+<p><strong>Syntax &amp; Environment Reference Guide</strong></p>
+</div>
+
 # Xaor Syntax & Environment Reference Guide
 
 This guide is compiled for developers implementing or interacting with the **Xaor Cryptographic Engine** CLI and Rust library. It covers shell-specific syntax issues, command-line arguments, environment configurations, and library usage.

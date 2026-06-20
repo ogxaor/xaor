@@ -1,13 +1,15 @@
- ██╗  ██╗  █████╗   ██████╗  ██████╗                                                                                                                                                     
- ╚██╗██╔╝ ██╔══██╗ ██╔═══██╗ ██╔══██╗                                                                                                                                                    
-  ╚███╔╝  ███████║ ██║   ██║ ██████╔╝                                                                                                                                                    
-  ██╔██╗  ██╔══██║ ██║   ██║ ██╔══██╗                                                                                                                                                    
- ██╔╝ ██╗ ██║  ██║ ╚██████╔╝ ██║  ██║                                                                                                                                                    
- ╚═╝  ╚═╝ ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝                                                                                                                                                    
+<div align="center">
+<pre>
+ ██╗  ██╗  █████╗   ██████╗  ██████╗ 
+ ╚██╗██╔╝ ██╔══██╗ ██╔═══██╗ ██╔══██╗
+  ╚███╔╝  ███████║ ██║   ██║ ██████╔╝
+  ██╔██╗  ██╔══██║ ██║   ██║ ██╔══██╗
+ ██╔╝ ██╗ ██║  ██║ ╚██████╔╝ ██║  ██║
+ ╚═╝  ╚═╝ ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝
+</pre>
+<p><strong>memory-hard cryptographic engine</strong> &nbsp;•&nbsp; <code>v0.2.0-alpha</code></p>
+</div>
 
-# Xaor
-
-**An adaptive, memory-hard cryptographic engine that makes hackers think in a new category.**
 
 [![Crates.io](https://img.shields.io/badge/crates.io-xaor-orange)](https://crates.io/crates/xaor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
