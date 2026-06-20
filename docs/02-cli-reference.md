@@ -4,37 +4,57 @@
 
 ## Installation & Environment Setup
 
-The Xaor CLI is compiled directly from the Rust codebase. You can build it from source and install it globally.
+You can install the Xaor CLI either by downloading precompiled binaries directly or building it from source.
 
-### 1. Build and Install via Cargo
-From the root of the `xaor` repository, compile and install the executable globally using cargo:
+### 1. Direct Binary Installation (No Rust Needed)
+Use the following terminal commands to download the precompiled binary:
+
+#### PowerShell (Windows)
+```powershell
+# Create installation directory and download the binary
+New-Item -ItemType Directory -Force -Path "$Home\.xaor\bin"
+Invoke-WebRequest -Uri "https://github.com/ogxaor/xaor/releases/latest/download/xaor.exe" -OutFile "$Home\.xaor\bin\xaor.exe"
+```
+
+#### Command Prompt (cmd.exe)
+```cmd
+:: Create installation directory and download using curl
+mkdir "%USERPROFILE%\.xaor\bin"
+curl -L "https://github.com/ogxaor/xaor/releases/latest/download/xaor.exe" -o "%USERPROFILE%\.xaor\bin\xaor.exe"
+```
+
+### 2. Alternative: Build from Source via Cargo
+If you have the Rust toolchain installed, run the compile script to install globally:
 ```bash
-# Installs 'xaor' binary into ~/.cargo/bin
 cargo install --path . --bin xaor
 ```
 
-### 2. Configure System PATH Environment Variables
-Ensure the cargo binary path is in your system's `PATH` variable so you can run the `xaor` command globally:
+### 3. Configure System PATH Environment Variables
+Ensure the binary path is in your system's `PATH` variable so you can run the `xaor` command globally:
 
 #### Windows (PowerShell)
-To permanently add Cargo's binary path to your User environment variables:
+To permanently add the binary path to your User environment variable block:
 ```powershell
-[System.Environment]::SetEnvironmentVariable(
-    "Path",
-    [System.Environment]::GetEnvironmentVariable("Path", "User") + ";$Home\.cargo\bin",
-    "User"
-)
-# Restart your shell terminal for changes to apply
+# For Direct installs (Recommended):
+[System.Environment]::SetEnvironmentVariable("Path", [System.Environment]::GetEnvironmentVariable("Path", "User") + ";$Home\.xaor\bin", "User")
+
+# For Cargo source builds:
+[System.Environment]::SetEnvironmentVariable("Path", [System.Environment]::GetEnvironmentVariable("Path", "User") + ";$Home\.cargo\bin", "User")
 ```
+*Note: Restart your terminal window for the changes to apply.*
 
 #### Linux & macOS (Bash/Zsh)
-Usually, Cargo automatically adds `~/.cargo/bin` to your path. If it's missing, add this to your `~/.bashrc`, `~/.zshrc`, or `~/.profile`:
+Add the path to your `~/.bashrc`, `~/.zshrc`, or `~/.profile`:
 ```bash
+# For Direct installs:
+export PATH="$HOME/.xaor/bin:$PATH"
+
+# For Cargo source builds:
 export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
-### 3. Verify Installation
-Verify that the `xaor` binary has been successfully added to your system environment path:
+### 4. Verify Installation
+Verify that the `xaor` binary has been successfully added to your environment path:
 ```bash
 xaor --version
 ```
