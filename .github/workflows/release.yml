@@ -1,0 +1,74 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build - ${{ matrix.platform.os }}
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      matrix:
+        platform:
+          - os: ubuntu-latest
+            lib_name: libxaor.so
+          - os: macos-latest
+            lib_name: libxaor.dylib
+          - os: windows-latest
+            lib_name: xaor.dll
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Compile Release
+        run: cargo build --release
+
+      - name: Upload Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform.lib_name }}
+          path: target/release/${{ matrix.platform.lib_name }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Download Windows DLL
+        uses: actions/download-artifact@v4
+        with:
+          name: xaor.dll
+          path: ./dist
+
+      - name: Download Linux SO
+        uses: actions/download-artifact@v4
+        with:
+          name: libxaor.so
+          path: ./dist
+
+      - name: Download macOS DYLIB
+        uses: actions/download-artifact@v4
+        with:
+          name: libxaor.dylib
+          path: ./dist
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./dist/xaor.dll
+            ./dist/libxaor.so
+            ./dist/libxaor.dylib
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
