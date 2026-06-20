@@ -8,7 +8,7 @@
 To integrate Xaor in a Rust project, add it to your dependencies in `Cargo.toml`:
 ```toml
 [dependencies]
-xaor = "0.2.0-alpha"
+xaor = "0.2.1"
 ```
 Or run the installation command in your cargo workspace:
 ```bash
@@ -204,7 +204,7 @@ func main() {
 To use Xaor in Dart or Flutter projects, add the library dependency to your `pubspec.yaml`:
 ```yaml
 dependencies:
-  xaor: ^0.2.0-alpha
+  xaor: ^0.2.1
 ```
 Or run the installation command:
 ```bash
