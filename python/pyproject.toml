@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xaor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant"
 readme = "README.md"
 authors = [

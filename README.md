@@ -7,7 +7,7 @@
  ██╔╝ ██╗ ██║  ██║ ╚██████╔╝ ██║  ██║
  ╚═╝  ╚═╝ ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝
 </pre>
-<p><strong>memory-hard cryptographic engine</strong> &nbsp;•&nbsp; <code>v0.2.0-alpha</code></p>
+<p><strong>memory-hard cryptographic engine</strong> &nbsp;•&nbsp; <code>v0.2.1</code></p>
 </div>
 
 
@@ -276,7 +276,7 @@ xaor errors
 
 ## Security Warning
 
-Xaor is experimental (v0.2.0 alpha). It has not undergone academic peer review or
+Xaor is experimental (v0.2.1). It has not undergone academic peer review or
 formal cryptanalysis. **Do not use Xaor as the sole protection layer in production
 systems until a public audit is completed.**
 

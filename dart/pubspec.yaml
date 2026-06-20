@@ -1,6 +1,6 @@
 name: xaor
 description: Dart bindings for the Xaor Cryptographic Engine — an adaptive, memory-hard, chaos-keyed password hashing algorithm.
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/ogxaor/xaor
 
 environment:
