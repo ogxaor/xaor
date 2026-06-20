@@ -289,6 +289,73 @@ print("Is valid:", verify_password("developer-pass", hash_val)) # True
 
 ---
 
+### 🎯 Dart & Flutter Integration (using `dart:ffi`)
+
+Install the package from pub.dev:
+```bash
+dart pub add xaor
+# or for Flutter:
+flutter pub add xaor
+```
+
+Use the Dart wrapper:
+```dart
+import 'package:xaor/xaor.dart';
+
+void main() {
+  final password = 'my-secure-dart-password';
+
+  // 1. Hash a password
+  final hash = Xaor.hashPassword(password);
+  print('Generated Hash: $hash');
+
+  // 2. Verify a password
+  final isValid = Xaor.verifyPassword(password, hash);
+  print('Is valid: $isValid'); // true
+}
+```
+
+---
+
+### 🐹 Go Integration (using `cgo`)
+
+Import the Go module:
+```bash
+go get github.com/ogxaor/xaor/go
+```
+
+Use the Go package:
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/ogxaor/xaor/go"
+)
+
+func main() {
+	password := "my-secure-go-password"
+
+	// 1. Hash a password
+	hash, err := xaor.HashPassword(password)
+	if err != nil {
+		log.Fatalf("Hashing failed: %v", err)
+	}
+	fmt.Printf("Generated Hash: %s\n", hash)
+
+	// 2. Verify a password
+	isValid, err := xaor.VerifyPassword(password, hash)
+	if err != nil {
+		log.Fatalf("Verification failed: %v", err)
+	}
+	fmt.Printf("Is valid: %t\n", isValid) // true
+}
+```
+
+---
+
 ## 6. Multi-Platform Package Distribution Roadmap
 
 To make Xaor available as native packages on different language registries (so developers can run `npm install xaor` or `pip install xaor` without compiling Rust from source), use these modern workflows:
