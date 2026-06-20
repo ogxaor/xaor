@@ -4,7 +4,16 @@
 
 ## Rust Integration
 
-For Rust applications, use Xaor directly as a dependency. The API supports a simple one-liner interface and a customization builder:
+### Installation & Setup
+To integrate Xaor in a Rust project, add it to your dependencies in `Cargo.toml`:
+```toml
+[dependencies]
+xaor = "0.2.0-alpha"
+```
+Or run the installation command in your cargo workspace:
+```bash
+cargo add xaor
+```
 
 ### Custom Hashing Parameters
 ```rust
@@ -42,8 +51,24 @@ let hasher = Xaor::new(config)?;
 
 ## Node.js Integration (C FFI)
 
-If you are calling Xaor's compiled shared library (`.dll` on Windows, `.so` on Linux, `.dylib` on macOS) from Node.js, you can use the `ffi-napi` package:
+### Installation & Setup
+1. Compile Xaor as a dynamic C-compatible library (`cdylib`):
+   Ensure your `Cargo.toml` in the `xaor` repo contains:
+   ```toml
+   [lib]
+   crate-type = ["cdylib", "rlib"]
+   ```
+   Compile the library:
+   ```bash
+   cargo build --release
+   ```
+2. Copy the compiled shared library output (`xaor.dll` on Windows, `libxaor.so` on Linux, `libxaor.dylib` on macOS) from `target/release/` to your Node project directory.
+3. Install the FFI package:
+   ```bash
+   npm install ffi-napi
+   ```
 
+### Implementation Example
 ```javascript
 const ffi = require('ffi-napi');
 const path = require('path');
@@ -85,10 +110,14 @@ function verifyPassword(password, hash) {
 
 ---
 
-## Python Integration (`ctypes`)
+## Python Integration (ctypes)
 
-In Python, the standard library provides `ctypes` which lets you load and execute compiled FFI binaries without installing any packages:
+### Installation & Setup
+1. Compile the dynamic C library (`cargo build --release`) from the `xaor` repository.
+2. Locate the compiled library and copy it to a directory accessible by your Python script.
+3. Load the library using Python's built-in `ctypes` module. No external pip packages are required.
 
+### Implementation Example
 ```python
 import ctypes
 import os
@@ -129,10 +158,17 @@ def verify_password(password: str, hash_str: str) -> bool:
 
 ---
 
-## Go Integration (`cgo`)
+## Go Integration (cgo)
 
-Import the official Go wrapper package and call the hashing routines directly:
+### Installation & Setup
+1. Add the Go package module to your project:
+   ```bash
+   go get github.com/ogxaor/xaor/go
+   ```
+2. Enable `CGO_ENABLED=1` in your environment, as Go uses cgo bindings to execute the high-performance Rust cryptographic engine.
+3. Ensure that the native dynamic library (`xaor.dll` / `libxaor.so` / `libxaor.dylib`) is in your system's dynamic linker search path (e.g. `/usr/local/lib` or specified via `LD_LIBRARY_PATH`).
 
+### Implementation Example
 ```go
 package main
 
@@ -157,5 +193,43 @@ func main() {
 		log.Fatalf("Verification failed: %v", err)
 	}
 	fmt.Printf("Is Valid: %t\n", ok)
+}
+```
+
+---
+
+## Dart & Flutter Integration (dart:ffi)
+
+### Installation & Setup
+To use Xaor in Dart or Flutter projects, add the library dependency to your `pubspec.yaml`:
+```yaml
+dependencies:
+  xaor: ^0.2.0-alpha
+```
+Or run the installation command:
+```bash
+# For Dart CLI
+dart pub add xaor
+
+# For Flutter apps
+flutter pub add xaor
+```
+* **Flutter Apps**: The Flutter package automatically bundles and links the pre-compiled native library binaries (`.aar` on Android, `.framework` on iOS/macOS) into the application bundle.
+* **Dart CLI**: Requires placing the compiled dynamic library matching your platform in the system search directory.
+
+### Implementation Example
+```dart
+import 'package:xaor/xaor.dart';
+
+void main() {
+  final password = 'my-secure-dart-password';
+
+  // 1. Hash password
+  final hash = Xaor.hashPassword(password);
+  print('Hash: $hash');
+
+  // 2. Verify password
+  final isValid = Xaor.verifyPassword(password, hash);
+  print('Is Valid: $isValid');
 }
 ```
