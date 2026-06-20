@@ -1,0 +1,31 @@
+{
+  "name": "xaor",
+  "version": "0.2.0",
+  "description": "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node test-js.js"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "xaor.dll",
+    "libxaor.so",
+    "libxaor.dylib"
+  ],
+  "keywords": [
+    "xaor",
+    "cryptography",
+    "password-hashing",
+    "argon2",
+    "argon2id",
+    "blake3",
+    "security"
+  ],
+  "author": "Surya",
+  "license": "MIT",
+  "dependencies": {
+    "ffi-napi": "^4.0.3"
+  }
+}

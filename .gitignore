@@ -4,3 +4,8 @@ Cargo.lock
 *.tmp
 .env
 .agents
+# Native binary exports & Node modules
+xaor.dll
+libxaor.so
+libxaor.dylib
+node_modules/
