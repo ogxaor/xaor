@@ -1,5 +1,5 @@
 {
-  "name": "xaor",
+  "name": "@xaor/xaor",
   "version": "0.2.0",
   "description": "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant",
   "main": "index.js",
