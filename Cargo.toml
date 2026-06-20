@@ -8,6 +8,14 @@ license = "MIT"
 repository = "https://github.com/ogxaor/xaor"
 keywords = ["cryptography", "password-hashing", "memory-hard", "security", "hashing"]
 categories = ["cryptography", "authentication"]
+exclude = [
+    "dart/.dart_tool",
+    "dart/pubspec.lock",
+    "python/dist",
+    "python/*.egg-info",
+    "python/xaor.egg-info",
+    "node_modules",
+]
 
 [lib]
 crate-type = ["rlib", "cdylib"]
