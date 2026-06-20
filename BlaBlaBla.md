@@ -287,3 +287,48 @@ print("Generated hash:", hash_val)
 print("Is valid:", verify_password("developer-pass", hash_val)) # True
 ```
 
+---
+
+## 6. Multi-Platform Package Distribution Roadmap
+
+To make Xaor available as native packages on different language registries (so developers can run `npm install xaor` or `pip install xaor` without compiling Rust from source), use these modern workflows:
+
+### 📦 Node.js (NPM Registry)
+
+#### Option A: Native Node Addons (Recommended for Performance)
+Use [napi-rs](https://napi.rs/) to compile Rust directly to a Node.js binary module (`.node`).
+1. **Setup:** Install the CLI: `npm install -g @napi-rs/cli`.
+2. **Initialize:** Run `napi-rs init` to configure your Rust project for N-API.
+3. **Github Actions Workflow:** `napi-rs` provides a pre-built GitHub Actions template that automatically cross-compiles your Rust engine on push for Windows, macOS, and Linux (both x64 and ARM architectures).
+4. **Publish:** It generates platform-specific package variants (e.g., `@xaor/core-win32-x64`) and a main package (`xaor`) that dynamically loads the correct binary for the user's OS.
+
+#### Option B: WebAssembly (Recommended for Web Browsers & Edge Runtimes)
+Use [wasm-pack](https://rustwasm.github.io/wasm-pack/) to compile the Rust logic into WebAssembly (`.wasm`) + a Javascript glue layer.
+1. **Build:** Run `wasm-pack build --target nodejs` (or `--target bundler` for browsers).
+2. **Publish:** Run `wasm-pack publish` to publish directly to NPM.
+3. *Note:* WebAssembly has a slight execution speed penalty compared to native FFI, but is 100% portable and runs in browsers, Cloudflare Workers, and serverless runtimes.
+
+---
+
+### 🐍 Python (PyPI Registry)
+
+Use [Maturin](https://www.maturin.rs/) paired with [PyO3](https://pyo3.rs/) to create python extension modules.
+1. **Setup:** Install Maturin: `pip install maturin`.
+2. **Configure:** Add PyO3 dependencies to your `Cargo.toml` and write your Python interface in `src/lib.rs` (using `#[pymodule]` macros).
+3. **Build Wheels:** Run `maturin build --release` to generate platform-specific wheel files (`.whl`).
+4. **Publish:** Run `maturin publish` to upload the wheels to PyPI. Users can then run `pip install xaor` and receive the pre-compiled binary matching their OS and Python version instantly.
+
+---
+
+### 🛡️ C / C++ header generation
+
+To let C/C++ developers compile directly against Xaor's FFI library:
+1. Use **`cbindgen`** to parse your Rust FFI definitions and output a C header file (`xaor.h`) automatically.
+2. Install: `cargo install --force cbindgen`
+3. Generate:
+   ```bash
+   cbindgen --config cbindgen.toml --crate xaor --output xaor.h
+   ```
+4. Distribute `xaor.h` alongside the precompiled dynamic libs (`xaor.dll`, `libxaor.so`, `libxaor.dylib`) via GitHub Releases.
+
+
