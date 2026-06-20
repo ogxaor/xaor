@@ -358,7 +358,7 @@ func main() {
 
 ## 6. Multi-Platform Package Distribution Roadmap
 
-To make Xaor available as native packages on different language registries (so developers can run `npm install xaor` or `pip install xaor` without compiling Rust from source), use these modern workflows:
+To make Xaor available as native packages on different language registries (so developers can run `npm install @xaor/xaor` or `pip install @xaor/xaor` without compiling Rust from source), use these modern workflows:
 
 ### 📦 Node.js (NPM Registry)
 
