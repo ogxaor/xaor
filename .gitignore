@@ -21,7 +21,7 @@ __pycache__/
 *.pyo
 *.pyd
 # Dart/Flutter cache
-.dart_tool/
+**/.dart_tool/
 
 # Python build artifacts
 python/dist/
