@@ -17,6 +17,12 @@
 
 ---
 
+> [!NOTE]
+> **Open Source Project**: Xaor is free and open-source software licensed under the MIT License. Anyone is free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software without restriction.
+
+---
+
+
 ## 30-Second Start
 
 ```rust
@@ -282,6 +288,15 @@ It is, however, an excellent candidate for:
 
 ---
 
-## License
+## License & Open Source
 
-MIT © Surya
+This project is fully open-source and released under the **MIT License**.
+
+Under this license, anyone is free to:
+- **Use** the software for private, commercial, or educational purposes.
+- **Distribute** the software and copy/sub-license it to others.
+- **Modify** the codebase and write derived applications without restriction.
+- **Integrate** Xaor into your own projects (commercial or open-source).
+
+We welcome forks, contributions, and feedback from the community! See the [LICENSE](LICENSE) file for the full legal text.
+

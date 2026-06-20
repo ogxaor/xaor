@@ -410,4 +410,11 @@ To let C/C++ developers compile directly against Xaor's FFI library:
    ```
 4. Distribute `xaor.h` alongside the precompiled dynamic libs (`xaor.dll`, `libxaor.so`, `libxaor.dylib`) via GitHub Releases.
 
+---
+
+## 7. Open Source & License
+
+Xaor is a **free and open-source** project. Anyone is permitted to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, subject to the conditions of the [MIT License](LICENSE). Contributions, bug reports, and pull requests are welcomed!
+
+
 
