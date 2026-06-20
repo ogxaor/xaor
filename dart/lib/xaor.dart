@@ -7,8 +7,10 @@ import 'package:path/path.dart' as p;
 typedef XaorHashC = ffi.Pointer<Utf8> Function(ffi.Pointer<Utf8> password);
 typedef XaorHashDart = ffi.Pointer<Utf8> Function(ffi.Pointer<Utf8> password);
 
-typedef XaorVerifyC = ffi.Int32 Function(ffi.Pointer<Utf8> password, ffi.Pointer<Utf8> stored);
-typedef XaorVerifyDart = int Function(ffi.Pointer<Utf8> password, ffi.Pointer<Utf8> stored);
+typedef XaorVerifyC =
+    ffi.Int32 Function(ffi.Pointer<Utf8> password, ffi.Pointer<Utf8> stored);
+typedef XaorVerifyDart =
+    int Function(ffi.Pointer<Utf8> password, ffi.Pointer<Utf8> stored);
 
 typedef XaorFreeStringC = ffi.Void Function(ffi.Pointer<Utf8> ptr);
 typedef XaorFreeStringDart = void Function(ffi.Pointer<Utf8> ptr);
@@ -55,16 +57,22 @@ class Xaor {
     } catch (e) {
       throw Exception(
         'Failed to load the xaor shared library ($libName). '
-        'Ensure the library file is in your executable directory, target/release, or system library path. Error: $e'
+        'Ensure the library file is in your executable directory, target/release, or system library path. Error: $e',
       );
     }
   }
 
   // Bind C functions
-  static final _hash = _library.lookupFunction<XaorHashC, XaorHashDart>('xaor_hash');
-  static final _verify = _library.lookupFunction<XaorVerifyC, XaorVerifyDart>('xaor_verify');
-  static final _freeString = _library.lookupFunction<XaorFreeStringC, XaorFreeStringDart>('xaor_free_string');
-  static final _lastError = _library.lookupFunction<XaorLastErrorC, XaorLastErrorDart>('xaor_last_error');
+  static final _hash = _library.lookupFunction<XaorHashC, XaorHashDart>(
+    'xaor_hash',
+  );
+  static final _verify = _library.lookupFunction<XaorVerifyC, XaorVerifyDart>(
+    'xaor_verify',
+  );
+  static final _freeString = _library
+      .lookupFunction<XaorFreeStringC, XaorFreeStringDart>('xaor_free_string');
+  static final _lastError = _library
+      .lookupFunction<XaorLastErrorC, XaorLastErrorDart>('xaor_last_error');
 
   /// Hash a password using Xaor's memory-hard pipeline.
   static String hashPassword(String password) {
@@ -74,7 +82,9 @@ class Xaor {
 
     if (hashPtr == ffi.nullptr) {
       final errPtr = _lastError();
-      final err = errPtr == ffi.nullptr ? 'Unknown error' : errPtr.toDartString();
+      final err = errPtr == ffi.nullptr
+          ? 'Unknown error'
+          : errPtr.toDartString();
       if (errPtr != ffi.nullptr) _freeString(errPtr);
       throw Exception('Hashing failed: $err');
     }
@@ -94,7 +104,9 @@ class Xaor {
 
     if (result == -1) {
       final errPtr = _lastError();
-      final err = errPtr == ffi.nullptr ? 'Unknown error' : errPtr.toDartString();
+      final err = errPtr == ffi.nullptr
+          ? 'Unknown error'
+          : errPtr.toDartString();
       if (errPtr != ffi.nullptr) _freeString(errPtr);
       throw Exception('Verification failed: $err');
     }

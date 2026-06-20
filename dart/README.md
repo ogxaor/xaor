@@ -1,4 +1,4 @@
-# Xaor Dart / Flutter Package
+# Xaor Dart Package
 
 Dart FFI bindings for the **Xaor Cryptographic Engine** — an adaptive, memory-hard, chaos-keyed password hashing algorithm.
 
@@ -8,8 +8,6 @@ Run this command in your terminal:
 
 ```bash
 dart pub add xaor
-# or for Flutter:
-flutter pub add xaor
 ```
 
 Or add this to your `pubspec.yaml`:

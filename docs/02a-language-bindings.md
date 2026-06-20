@@ -198,24 +198,21 @@ func main() {
 
 ---
 
-## Dart & Flutter Integration (dart:ffi)
+## Dart Integration (dart:ffi)
 
 ### Installation & Setup
-To use Xaor in Dart or Flutter projects, add the library dependency to your `pubspec.yaml`:
+To use Xaor in Dart projects, add the library dependency to your `pubspec.yaml`:
 ```yaml
 dependencies:
   xaor: ^0.2.1
 ```
 Or run the installation command:
 ```bash
-# For Dart CLI
+# For Dart CLI or package development
 dart pub add xaor
-
-# For Flutter apps
-flutter pub add xaor
 ```
-* **Flutter Apps**: The Flutter package automatically bundles and links the pre-compiled native library binaries (`.aar` on Android, `.framework` on iOS/macOS) into the application bundle.
-* **Dart CLI**: Requires placing the compiled dynamic library matching your platform in the system search directory.
+* **Dart Projects**: The package resolves and links the precompiled native library binaries into the runtime environment or dynamic linker lookup scope.
+
 
 ### Implementation Example
 ```dart

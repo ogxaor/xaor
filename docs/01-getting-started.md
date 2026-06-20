@@ -12,7 +12,6 @@ Xaor is designed to be highly portable and runs as a native package across multi
 | **Node.js** | NPM | `npm install xaorjs` |
 | **Python** | PyPI | `pip install xaor` |
 | **Dart** | Pub.dev | `dart pub add xaor` |
-| **Flutter** | Pub.dev | `flutter pub add xaor` |
 | **Go** | Go Modules | `go get github.com/ogxaor/xaor/go` |
 
 ---

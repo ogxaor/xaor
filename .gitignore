@@ -26,4 +26,8 @@ __pycache__/
 # Python build artifacts
 python/dist/
 python/*.egg-info/
+
+# Local npm configurations
+.npmrc
+package-lock.json
 

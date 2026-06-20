@@ -47,7 +47,6 @@ Xaor is available as a native package across multiple language registries:
 | **Node.js** | NPM | `npm install xaorjs` |
 | **Python** | PyPI | `pip install xaor` |
 | **Dart** | Pub.dev | `dart pub add xaor` |
-| **Flutter** | Pub.dev | `flutter pub add xaor` |
 | **Go** | Go Modules | `go get github.com/ogxaor/xaor/go` |
 
 ---

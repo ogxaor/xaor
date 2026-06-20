@@ -1,4 +1,4 @@
-const ffi = require('ffi-napi');
+const koffi = require('koffi');
 const path = require('path');
 const fs = require('fs');
 
@@ -20,7 +20,7 @@ let libPath = path.join(__dirname, libName);
 if (!fs.existsSync(libPath)) {
   const targetReleasePath = path.join(__dirname, 'target', 'release', libName);
   const targetDebugPath = path.join(__dirname, 'target', 'debug', libName);
-  
+
   if (fs.existsSync(targetReleasePath)) {
     libPath = targetReleasePath;
   } else if (fs.existsSync(targetDebugPath)) {
@@ -33,26 +33,26 @@ if (!fs.existsSync(libPath)) {
   }
 }
 
-const lib = ffi.Library(libPath, {
-  'xaor_hash': ['pointer', ['string']],
-  'xaor_verify': ['int32', ['string', 'string']],
-  'xaor_free_string': ['void', ['pointer']],
-  'xaor_last_error': ['pointer', []]
-});
+const lib = koffi.load(libPath);
+
+const xaor_hash        = lib.func('xaor_hash',        'void *', ['str']);
+const xaor_verify      = lib.func('xaor_verify',      'int32',  ['str', 'str']);
+const xaor_free_string = lib.func('xaor_free_string', 'void',   ['void *']);
+const xaor_last_error  = lib.func('xaor_last_error',  'void *', []);
 
 function hashPassword(password) {
   if (typeof password !== 'string') {
     throw new TypeError('Password must be a string');
   }
-  const ptr = lib.xaor_hash(password);
-  if (ptr.isNull()) {
-    const errPtr = lib.xaor_last_error();
-    const err = errPtr.isNull() ? 'Unknown cryptographic error' : errPtr.readCString();
-    if (!errPtr.isNull()) lib.xaor_free_string(errPtr);
+  const ptr = xaor_hash(password);
+  if (!ptr) {
+    const errPtr = xaor_last_error();
+    const err = errPtr ? koffi.decode(errPtr, 'char', 256) : 'Unknown cryptographic error';
+    if (errPtr) xaor_free_string(errPtr);
     throw new Error('Hashing failed: ' + err);
   }
-  const hash = ptr.readCString();
-  lib.xaor_free_string(ptr);
+  const hash = koffi.decode(ptr, 'char', 4096).replace(/\0.*$/, '');
+  xaor_free_string(ptr);
   return hash;
 }
 
@@ -60,11 +60,11 @@ function verifyPassword(password, hash) {
   if (typeof password !== 'string' || typeof hash !== 'string') {
     throw new TypeError('Password and hash must be strings');
   }
-  const res = lib.xaor_verify(password, hash);
+  const res = xaor_verify(password, hash);
   if (res === -1) {
-    const errPtr = lib.xaor_last_error();
-    const err = errPtr.isNull() ? 'Unknown verification error' : errPtr.readCString();
-    if (!errPtr.isNull()) lib.xaor_free_string(errPtr);
+    const errPtr = xaor_last_error();
+    const err = errPtr ? koffi.decode(errPtr, 'char', 256).replace(/\0.*$/, '') : 'Unknown verification error';
+    if (errPtr) xaor_free_string(errPtr);
     throw new Error('Verification failed: ' + err);
   }
   return res === 1;
@@ -72,5 +72,5 @@ function verifyPassword(password, hash) {
 
 module.exports = {
   hashPassword,
-  verifyPassword
+  verifyPassword,
 };

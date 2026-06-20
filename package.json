@@ -1,6 +1,6 @@
 {
   "name": "xaorjs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Adaptive regenerative cryptographic engine — memory-hard, chaos-keyed, GPU/ASIC-resistant",
   "main": "index.js",
   "types": "index.d.ts",
@@ -26,6 +26,6 @@
   "author": "Surya",
   "license": "MIT",
   "dependencies": {
-    "ffi-napi": "^4.0.3"
+    "koffi": "^2.9.0"
   }
 }

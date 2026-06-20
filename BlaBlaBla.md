@@ -301,13 +301,11 @@ print("Is valid:", verify_password("developer-pass", hash_val)) # True
 
 ---
 
-### 🎯 Dart & Flutter Integration (using `dart:ffi`)
+### 🎯 Dart Integration (using `dart:ffi`)
 
 Install the package from pub.dev:
 ```bash
 dart pub add xaor
-# or for Flutter:
-flutter pub add xaor
 ```
 
 Use the Dart wrapper:
